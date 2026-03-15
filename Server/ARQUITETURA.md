@@ -759,7 +759,6 @@ builder.AllowAnyHeader();
 ```csharp
 Origins = [
     "https://localhost:7002",
-    "https://testesdev01.nddcargo.com.br",
     // ...outros ambientes de teste
 ];
 Methods = ["*"];
