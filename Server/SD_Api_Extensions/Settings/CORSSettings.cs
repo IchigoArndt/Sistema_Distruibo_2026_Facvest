@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SD_Api_Extensions.Settings
+{
+    /// <summary>
+    /// Representação das configurações dos CORS da aplicação
+    /// </summary>
+    public class CORSSettings
+    {
+        /// <summary>
+        /// Clientes que tem permissão para fazer requisições a API.
+        /// Ex: "http://localhost:9000", ... ou "*" para permitir todas as origens
+        /// </summary>
+        public string[] Origins { get; set; }
+
+        /// <summary>
+        /// Métodos HTTP que a API tem permissão para disponibilizar o acesso
+        /// Ex: "GET", "POST", "PUT", "DELETE",... ou "*" para permitir todos os métodos
+        /// </summary>
+        public string[] Methods { get; set; }
+
+        /// <summary>
+        /// Cabeçalhos HTTP que a API está autorizada a aceitar
+        /// Ex: "Authorization", "Accept", ... ou "*" para permitir todos os cabeçalhos
+        /// </summary>
+        public string[] Headers { get; set; }
+
+        public CORSSettings()
+        {
+        }
+
+        /// <summary>
+        /// Cria uma configuração padrão quando não é informado no appsettings.json nenhuma configuração para o CORS (seção CORSSettings)
+        /// </summary>
+        /// <returns>Configuração padrão (permitindo tudo)</returns>
+        public CORSSettings Default()
+        {
+            Origins =
+            [
+                "https://localhost:7002",
+                "https://testesdev01.nddcargo.com.br",
+                "https://testesdev02.nddcargo.com.br",
+                "https://testesdev03.nddcargo.com.br",
+                "https://testesdev04.nddcargo.com.br",
+                "https://testesdev05.nddcargo.com.br",
+                "https://homologacaonddcargo.nddcargo.com.br"
+            ];
+            Methods = ["*"];
+            Headers = ["*"];
+
+            return this;
+        }
+    }
+}

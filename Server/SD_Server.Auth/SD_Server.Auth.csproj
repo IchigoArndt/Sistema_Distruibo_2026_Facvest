@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.13.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SD_Api_Base\SD_Api_Base.csproj" />
+    <ProjectReference Include="..\SD_Api_Extensions\SD_Api_Extensions.csproj" />
+    <ProjectReference Include="..\SD_Server.Application\SD_Server.Application.csproj" />
+    <ProjectReference Include="..\SD_Server.Infra\SD_Server.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

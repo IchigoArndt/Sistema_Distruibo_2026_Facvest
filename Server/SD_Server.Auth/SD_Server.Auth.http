@@ -1,0 +1,6 @@
+@SD_Server.Auth_HostAddress = http://localhost:5159
+
+GET {{SD_Server.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

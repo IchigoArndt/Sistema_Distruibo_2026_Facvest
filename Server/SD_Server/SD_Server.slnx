@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/1 - Distribution/">
+    <Project Path="../SD_Server.Auth/SD_Server.Auth.csproj" />
+    <Project Path="SD_Server.Api.csproj" />
+  </Folder>
+  <Folder Name="/2 - Application/">
+    <Project Path="../SD_Server.Application/SD_Server.Application.csproj" />
+  </Folder>
+  <Folder Name="/3 - Domain/">
+    <Project Path="../SD_Server.Domain/SD_Server.Domain.csproj" />
+  </Folder>
+  <Folder Name="/4 - Infra/">
+    <Project Path="../SD_Server.Infra/SD_Server.Infra.csproj" />
+  </Folder>
+  <Folder Name="/5 - Libraries/">
+    <Project Path="../SD_Api_Base/SD_Api_Base.csproj" />
+    <Project Path="../SD_Api_Extensions/SD_Api_Extensions.csproj" />
+    <Project Path="../SD_SharedKernel/SD_SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/6 - Tests/" />
+</Solution>
