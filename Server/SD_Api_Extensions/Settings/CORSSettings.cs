@@ -40,12 +40,6 @@ namespace SD_Api_Extensions.Settings
             Origins =
             [
                 "https://localhost:7002",
-                "https://testesdev01.nddcargo.com.br",
-                "https://testesdev02.nddcargo.com.br",
-                "https://testesdev03.nddcargo.com.br",
-                "https://testesdev04.nddcargo.com.br",
-                "https://testesdev05.nddcargo.com.br",
-                "https://homologacaonddcargo.nddcargo.com.br"
             ];
             Methods = ["*"];
             Headers = ["*"];
