@@ -1,0 +1,63 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p>Bem-vindo de volta, Profissional!</p>
+    </div>
+    <p-button label="Nova Avaliação" icon="pi pi-plus" routerLink="/avaliacoes" />
+  </div>
+
+  <!-- Stats cards -->
+  <div class="stats-grid">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-card stat-{{ stat.color }}">
+        <div class="stat-icon">
+          <i [class]="stat.icon"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stat.value }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="dashboard-grid">
+
+    <!-- Chart -->
+    <div class="card">
+      <h3 class="section-title">Avaliações por Mês</h3>
+      <p-chart type="line" [data]="chartData" [options]="chartOptions" height="200px" />
+    </div>
+
+    <!-- Recent evaluations -->
+    <div class="card">
+      <h3 class="section-title">Avaliações Recentes</h3>
+      <p-table [value]="recentAvaliacoes" [tableStyle]="{ 'min-width': '100%' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Aluno</th>
+            <th>Data</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>
+              <div class="aluno-cell">
+                <p-avatar [label]="getAvatar(item.alunoNome)" shape="circle" size="normal" />
+                <span>{{ item.alunoNome }}</span>
+              </div>
+            </td>
+            <td>{{ item.data }}</td>
+            <td>
+              <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+  </div>
+</div>

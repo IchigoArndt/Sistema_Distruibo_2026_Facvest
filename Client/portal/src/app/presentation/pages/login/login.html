@@ -1,0 +1,80 @@
+<div class="login-page">
+
+  <div class="login-left">
+    <div class="brand">
+      <i class="pi pi-bolt brand-icon"></i>
+      <h1>FitPortal</h1>
+      <p>Plataforma para profissionais de educação física</p>
+    </div>
+    <ul class="features">
+      <li><i class="pi pi-check-circle"></i> Gerencie seus alunos facilmente</li>
+      <li><i class="pi pi-check-circle"></i> Registre e acompanhe avaliações físicas</li>
+      <li><i class="pi pi-check-circle"></i> Evolução em tempo real</li>
+    </ul>
+  </div>
+
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-header">
+        <i class="pi pi-bolt brand-icon-sm"></i>
+        <h2>Entrar no Portal</h2>
+        <p>Acesse sua conta profissional</p>
+      </div>
+
+      <form (ngSubmit)="onLogin()" class="login-form">
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="profissional@email.com"
+            class="w-full" />
+        </div>
+
+        <div class="field">
+          <label for="password">Senha</label>
+          <p-password
+            inputId="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Sua senha"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full" />
+        </div>
+
+        <div class="field-row">
+          <div class="remember">
+            <p-checkbox
+              [(ngModel)]="rememberMe"
+              name="rememberMe"
+              [binary]="true"
+              inputId="remember" />
+            <label for="remember">Lembrar-me</label>
+          </div>
+          <a href="#" class="forgot-link">Esqueceu a senha?</a>
+        </div>
+
+        <p-button
+          type="submit"
+          label="Entrar"
+          icon="pi pi-sign-in"
+          [loading]="loading"
+          styleClass="w-full login-btn" />
+      </form>
+
+      <p-divider align="center">
+        <span class="divider-text">ou</span>
+      </p-divider>
+
+      <p class="register-text">
+        Não tem conta? <a href="#">Cadastre-se</a>
+      </p>
+    </div>
+  </div>
+
+</div>

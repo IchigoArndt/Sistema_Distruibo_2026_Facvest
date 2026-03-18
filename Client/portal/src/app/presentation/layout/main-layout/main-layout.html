@@ -1,0 +1,62 @@
+<div class="layout-wrapper" [class.sidebar-collapsed]="sidebarCollapsed()">
+
+  <!-- Sidebar -->
+  <aside class="layout-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-area">
+        <i class="pi pi-bolt logo-icon"></i>
+        <span class="logo-text">FitPortal</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-item"
+          pRipple>
+          <i [class]="item.icon"></i>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item logout-btn" (click)="logout()" pRipple>
+        <i class="pi pi-sign-out"></i>
+        <span class="nav-label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content area -->
+  <div class="layout-main">
+
+    <!-- Topbar -->
+    <header class="layout-topbar">
+      <button class="toggle-btn" (click)="toggleSidebar()" pRipple>
+        <i class="pi pi-bars"></i>
+      </button>
+
+      <div class="topbar-right">
+        <button class="icon-btn" pRipple>
+          <i class="pi pi-bell" pBadge value="3" severity="danger"></i>
+        </button>
+        <p-avatar
+          label="P"
+          styleClass="profile-avatar"
+          shape="circle">
+        </p-avatar>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="layout-content">
+      <router-outlet />
+    </main>
+  </div>
+
+</div>
+
+<p-toast />

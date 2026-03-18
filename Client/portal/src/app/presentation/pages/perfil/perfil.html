@@ -1,0 +1,99 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Meu Perfil</h2>
+      <p>Gerencie suas informações profissionais</p>
+    </div>
+  </div>
+
+  <div class="perfil-grid">
+
+    <!-- Avatar card -->
+    <div class="card avatar-card">
+      <p-avatar [label]="getAvatar()" shape="circle" size="xlarge" styleClass="perfil-avatar" />
+      <h3>{{ profissional.nome }}</h3>
+      <p class="cref-label">{{ profissional.cref }}</p>
+      <p-button
+        label="Alterar foto"
+        icon="pi pi-camera"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        styleClass="mt-btn" />
+
+      <p-divider />
+
+      <div class="info-list">
+        <div class="info-row">
+          <i class="pi pi-envelope"></i>
+          <span>{{ profissional.email }}</span>
+        </div>
+        <div class="info-row">
+          <i class="pi pi-phone"></i>
+          <span>{{ profissional.telefone }}</span>
+        </div>
+        <div class="info-row">
+          <i class="pi pi-id-card"></i>
+          <span>{{ profissional.cref }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form card -->
+    <div class="card form-card">
+      <h3 class="section-title">Informações Pessoais</h3>
+
+      <form class="perfil-form" (ngSubmit)="save()">
+        <div class="form-row">
+          <div class="field">
+            <label>Nome completo</label>
+            <input pInputText [(ngModel)]="profissional.nome" name="nome" class="w-full" />
+          </div>
+          <div class="field">
+            <label>CREF</label>
+            <input pInputText [(ngModel)]="profissional.cref" name="cref" class="w-full" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>E-mail</label>
+            <input pInputText [(ngModel)]="profissional.email" name="email" type="email" class="w-full" />
+          </div>
+          <div class="field">
+            <label>Telefone</label>
+            <input pInputText [(ngModel)]="profissional.telefone" name="telefone" class="w-full" />
+          </div>
+        </div>
+
+        <div class="field full-width">
+          <label>Biografia / Especialidades</label>
+          <textarea
+            pTextarea
+            [(ngModel)]="profissional.bio"
+            name="bio"
+            rows="4"
+            class="w-full">
+          </textarea>
+        </div>
+
+        <p-divider />
+
+        <div class="form-actions">
+          <p-button
+            type="submit"
+            label="Salvar alterações"
+            icon="pi pi-check"
+            [loading]="saving" />
+          <p-button
+            type="button"
+            label="Cancelar"
+            severity="secondary"
+            [outlined]="true" />
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
