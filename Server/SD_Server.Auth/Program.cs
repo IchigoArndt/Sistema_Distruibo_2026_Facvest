@@ -1,20 +1,32 @@
 using Scalar.AspNetCore;
 using SD_Api_Extensions;
-using SD_Server.Infra.Configurations;
+using SD_Api_Extensions.Settings;
+using Serilog;
+using Serilog.Events;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+builder.Host.UseSerilog((_, _, configuration) =>
+{
+    configuration
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .Enrich.FromLogContext()
+        .WriteTo.Console(
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} | {Level:u3} | {SourceContext} | {Message}{NewLine}{Exception}");
+
+    var mongo = Environment.GetEnvironmentVariable("Connection_Mongo");
+    if (!string.IsNullOrWhiteSpace(mongo))
+        configuration.WriteTo.MongoDB(mongo, "LogsAuth");
+});
+
 //builder.Services.AddDbServices(builder.Configuration);
-
-//builder.Services.AddStaticFiles(); // Para servir arquivos estáticos (ex: imagens)
-
-//builder.Host.UseSerilog();
-
-// Configurações
-EnviromentConfiguration.Configure(builder.Configuration);
+//builder.Services.AddStaticFiles();
 
 builder.Services.AddControllers();
 

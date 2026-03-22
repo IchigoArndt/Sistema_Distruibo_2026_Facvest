@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SD_Server.Application;
+using SD_Server.Infra.Data;
+using SD_Server.Infra.Data.Context;
+using SD_Server.Infra.Data.DbMigrator;
 using System.Reflection;
 
 namespace SD_Api_Extensions
@@ -11,6 +16,35 @@ namespace SD_Api_Extensions
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Registra o DbContext
+        /// e os repositórios (via reflexão) usando a connection string lida de AppSettings.
+        /// </summary>
+        /// <param name="services">O container de DI.</param>
+        /// <exception cref="Exception">Lançada se a seção AppSettings não estiver configurada.</exception>
+        public static void AddDbServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionStringSql = Environment.GetEnvironmentVariable("Connection_Sql")
+                ?? configuration["AppSettings:ConnectionString"]
+                ?? configuration.GetConnectionString("SqlServer");
+
+            if (string.IsNullOrEmpty(connectionStringSql))
+                throw new InvalidOperationException("Connection String não definida");
+
+            services.AddDbContext<SdServerDbContext>(options =>
+            {
+                options.UseSqlServer(connectionStringSql, sqlOptions =>
+                {
+                    sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "dbo");
+                });
+            });
+
+            services.AddScoped<DatabaseMigrator>();
+
+            AddRepositories(services);
+        }
+
+
         /// <summary>
         /// Registra o AutoMapper escaneando o assembly de Application
         /// e o assembly do tipo <typeparamref name="TAssembly"/> informado pelo chamador.
@@ -40,6 +74,23 @@ namespace SD_Api_Extensions
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars"));
                 options.RequestPath = "/avatars";
             });
+        }
+
+        /// <summary>
+        /// Registra os repositórios automaticamente, escaneando o assembly que contém o marker InfraDataModule.
+        /// </summary>
+        /// <param name="services">O container de DI.</param>
+        private static void AddRepositories(IServiceCollection services)
+        {
+            var repositoryAssembly = typeof(InfraDataModule).Assembly;
+            var registrations =
+                from type in repositoryAssembly.GetExportedTypes()
+                where type.Name.EndsWith("Repository")
+                from service in type.GetInterfaces()
+                select new { service, implementation = type };
+
+            foreach (var reg in registrations)
+                services.AddTransient(reg.service, reg.implementation);
         }
     }
 }

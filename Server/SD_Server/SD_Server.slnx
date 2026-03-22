@@ -10,6 +10,7 @@
     <Project Path="../SD_Server.Domain/SD_Server.Domain.csproj" />
   </Folder>
   <Folder Name="/4 - Infra/">
+    <Project Path="../SD_Server.Infra.Data/SD_Server.Infra.Data.csproj" Id="2901638a-bdb3-4f77-b357-07b450d7aa8b" />
     <Project Path="../SD_Server.Infra/SD_Server.Infra.csproj" />
   </Folder>
   <Folder Name="/5 - Libraries/">
