@@ -8,10 +8,26 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.13.8" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.MongoDB" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <ProjectReference Include="..\SD_Api_Base\SD_Api_Base.csproj" />
+    <ProjectReference Include="..\SD_Api_Extensions\SD_Api_Extensions.csproj" />
+    <ProjectReference Include="..\SD_Server.Application\SD_Server.Application.csproj" />
+    <ProjectReference Include="..\SD_Server.Domain\SD_Server.Domain.csproj" />
+    <ProjectReference Include="..\SD_Server.Infra\SD_Server.Infra.csproj" />
+    <ProjectReference Include="..\SD_Server.Infra.Data\SD_Server.Infra.Data.csproj" />
   </ItemGroup>
 
 </Project>
