@@ -7,6 +7,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -34,7 +35,10 @@ export class MainLayoutComponent {
     { label: 'Meu Perfil', icon: 'pi pi-user',      route: '/perfil'     },
   ];
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    readonly themeService: ThemeService
+  ) {}
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);

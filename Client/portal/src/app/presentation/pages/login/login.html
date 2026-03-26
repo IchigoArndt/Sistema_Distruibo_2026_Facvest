@@ -1,5 +1,10 @@
 <div class="login-page">
 
+  <button class="theme-toggle-floating" (click)="themeService.toggle()"
+    [title]="themeService.isDark() ? 'Ativar modo claro' : 'Ativar modo noturno'">
+    <i [class]="themeService.isDark() ? 'pi pi-sun' : 'pi pi-moon'"></i>
+  </button>
+
   <div class="login-left">
     <div class="brand">
       <i class="pi pi-bolt brand-icon"></i>

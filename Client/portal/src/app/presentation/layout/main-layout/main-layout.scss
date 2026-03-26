@@ -125,6 +125,22 @@ $transition: 0.25s ease;
   }
 }
 
+.dark-mode .logout-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.theme-toggle-btn {
+  transition: color $transition, background $transition, transform 0.2s ease;
+
+  i {
+    transition: transform 0.4s ease;
+  }
+
+  &:hover i {
+    transform: rotate(20deg);
+  }
+}
+
 /* ── Main ────────────────────────────────── */
 .layout-main {
   flex: 1;

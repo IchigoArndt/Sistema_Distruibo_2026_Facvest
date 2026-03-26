@@ -1,5 +1,25 @@
 @import "primeicons/primeicons.css";
 
+/*
+ * Mapeamento de variáveis legadas (PrimeNG v3) para tokens PrimeNG v20 (--p-*).
+ * O PrimeNG v20 gera apenas variáveis --p-* via JavaScript; as variáveis antigas
+ * não existem mais. Estes aliases garantem que o CSS customizado funcione em
+ * ambos os modos (claro e escuro), pois referências a var(--p-*) são resolvidas
+ * dinamicamente quando o tema muda.
+ */
+:root {
+  --text-color:           var(--p-text-color);
+  --text-color-secondary: var(--p-text-muted-color);
+  --surface-ground:       var(--p-content-background);
+  --surface-card:         var(--p-content-background);
+  --surface-border:       var(--p-content-border-color);
+  --surface-hover:        var(--p-content-hover-background);
+  --primary-color:        var(--p-primary-color);
+  --red-50:               var(--p-red-50);
+  --red-500:              var(--p-red-500);
+  --red-600:              var(--p-red-600);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,9 +28,10 @@
 
 html, body {
   height: 100%;
-  font-family: var(--font-family);
+  font-family: var(--p-font-family, system-ui, sans-serif);
   background-color: var(--surface-ground);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .page-container {
@@ -23,4 +44,9 @@ html, body {
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 1.5rem;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode .card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }

@@ -40,6 +40,10 @@
       </button>
 
       <div class="topbar-right">
+        <button class="icon-btn theme-toggle-btn" (click)="themeService.toggle()" pRipple
+          [title]="themeService.isDark() ? 'Ativar modo claro' : 'Ativar modo noturno'">
+          <i [class]="themeService.isDark() ? 'pi pi-sun' : 'pi pi-moon'"></i>
+        </button>
         <button class="icon-btn" pRipple>
           <i class="pi pi-bell" pBadge value="3" severity="danger"></i>
         </button>

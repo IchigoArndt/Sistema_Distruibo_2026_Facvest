@@ -183,3 +183,37 @@
 .w-full {
   width: 100%;
 }
+
+.theme-toggle-floating {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 100;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  i {
+    transition: transform 0.4s ease;
+  }
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    i {
+      transform: rotate(20deg);
+    }
+  }
+}
