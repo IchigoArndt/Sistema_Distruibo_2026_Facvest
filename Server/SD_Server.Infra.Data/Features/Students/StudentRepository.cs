@@ -57,7 +57,22 @@ public class StudentRepository(SdServerDbContext context) : IStudentRepository
     {
         try
         {
-            context.Students.Update(entity);
+            var student = await context.Students.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+            if (entity.Age > 0)
+                student.Age = entity.Age;
+
+            if(!string.IsNullOrEmpty(entity.CellPhone))
+                student.CellPhone = entity.CellPhone;
+
+            if (!string.IsNullOrEmpty(entity.Email))
+                student.Email = entity.Email;
+
+            if (!string.IsNullOrEmpty(entity.Name))
+                student.Name = entity.Name;
+
+            context.Students.Update(student);
+
             await context.SaveChangesAsync();
             return Unit.Sucessful;
         }
