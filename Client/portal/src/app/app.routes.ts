@@ -20,8 +20,32 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/pages/alunos/alunos').then(m => m.AlunosComponent)
       },
       {
+        path: 'alunos/novo',
+        loadComponent: () => import('./presentation/pages/alunos/aluno-form/aluno-form').then(m => m.AlunoFormComponent)
+      },
+      {
+        path: 'alunos/:id',
+        loadComponent: () => import('./presentation/pages/alunos/aluno-detalhe/aluno-detalhe').then(m => m.AlunoDetalheComponent)
+      },
+      {
+        path: 'alunos/:id/editar',
+        loadComponent: () => import('./presentation/pages/alunos/aluno-form/aluno-form').then(m => m.AlunoFormComponent)
+      },
+      {
         path: 'avaliacoes',
         loadComponent: () => import('./presentation/pages/avaliacoes/avaliacoes').then(m => m.AvaliacoesComponent)
+      },
+      {
+        path: 'avaliacoes/nova',
+        loadComponent: () => import('./presentation/pages/avaliacoes/avaliacao-form/avaliacao-form').then(m => m.AvaliacaoFormComponent)
+      },
+      {
+        path: 'avaliacoes/:id',
+        loadComponent: () => import('./presentation/pages/avaliacoes/avaliacao-detalhe/avaliacao-detalhe').then(m => m.AvaliacaoDetalheComponent)
+      },
+      {
+        path: 'avaliacoes/:id/editar',
+        loadComponent: () => import('./presentation/pages/avaliacoes/avaliacao-form/avaliacao-form').then(m => m.AvaliacaoFormComponent)
       },
       {
         path: 'perfil',

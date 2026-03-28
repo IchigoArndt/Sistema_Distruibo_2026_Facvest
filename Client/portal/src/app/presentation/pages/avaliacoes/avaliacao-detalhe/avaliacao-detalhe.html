@@ -1,0 +1,252 @@
+<p-toast />
+<p-confirmDialog />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Detalhes da Avaliação</h2>
+      <p>Visualize o resultado completo da avaliação física</p>
+    </div>
+    <p-button label="Voltar" icon="pi pi-arrow-left" severity="secondary" [text]="true" routerLink="/avaliacoes" />
+  </div>
+
+  @if (loading) {
+    <div class="loading-state card">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--primary-color)"></i>
+      <p>Carregando avaliação...</p>
+    </div>
+  }
+
+  @if (!loading && avaliacao) {
+
+    <!-- Cabeçalho resumo -->
+    <div class="card summary-card">
+      <div class="summary-left">
+        <p-avatar [label]="getAvatar(avaliacao.alunoNome)" shape="circle" size="large" styleClass="summary-avatar" />
+        <div>
+          <h3 class="summary-name">{{ avaliacao.alunoNome }}</h3>
+          <div class="summary-meta">
+            <span><i class="pi pi-calendar"></i> {{ avaliacao.data }}</span>
+            <span><i class="pi pi-tag"></i> {{ avaliacao.tipo }}</span>
+            <span><i class="pi pi-bullseye"></i> {{ avaliacao.objetivo }}</span>
+            <p-tag [value]="avaliacao.status" [severity]="getSeverity(avaliacao.status)" />
+          </div>
+        </div>
+      </div>
+      <div class="summary-actions">
+        <p-button
+          label="Editar"
+          icon="pi pi-pencil"
+          severity="warn"
+          [outlined]="true"
+          [routerLink]="['/avaliacoes', avaliacao.id, 'editar']" />
+        <p-button
+          label="Excluir"
+          icon="pi pi-trash"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="confirmDelete()" />
+      </div>
+    </div>
+
+    <div class="detail-grid">
+
+      <!-- Resultados calculados -->
+      @if (avaliacao.imc || avaliacao.percentualGordura) {
+        <div class="card metrics-card">
+          <h4 class="section-title"><i class="pi pi-chart-pie"></i> Resultados Calculados</h4>
+          <div class="metrics-row">
+            @if (avaliacao.imc) {
+              <div class="metric-item">
+                <span class="metric-value">{{ avaliacao.imc }}</span>
+                <span class="metric-label">IMC</span>
+                <span class="metric-sub">{{ getImcClassificacao(avaliacao.imc) }}</span>
+              </div>
+            }
+            @if (avaliacao.percentualGordura) {
+              <div class="metric-item">
+                <span class="metric-value">{{ avaliacao.percentualGordura }}%</span>
+                <span class="metric-label">% Gordura</span>
+                <span class="metric-sub">Pollock 7 dobras</span>
+              </div>
+            }
+            @if (avaliacao.proximaAvaliacao) {
+              <div class="metric-item">
+                <span class="metric-value">{{ avaliacao.proximaAvaliacao }}</span>
+                <span class="metric-label">Próxima Avaliação</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Composição Corporal -->
+      @if (avaliacao.composicaoCorporal) {
+        <div class="card">
+          <h4 class="section-title"><i class="pi pi-chart-bar"></i> Composição Corporal</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Peso</span>
+              <span class="info-value">{{ avaliacao.composicaoCorporal.peso }} kg</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Altura</span>
+              <span class="info-value">{{ avaliacao.composicaoCorporal.altura }} cm</span>
+            </div>
+            @if (avaliacao.composicaoCorporal.cintura) {
+              <div class="info-item">
+                <span class="info-label">Cintura</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.cintura }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.abdomen) {
+              <div class="info-item">
+                <span class="info-label">Abdômen</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.abdomen }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.quadril) {
+              <div class="info-item">
+                <span class="info-label">Quadril</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.quadril }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.torax) {
+              <div class="info-item">
+                <span class="info-label">Tórax</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.torax }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.bracoDireito) {
+              <div class="info-item">
+                <span class="info-label">Braço Dir.</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.bracoDireito }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.bracoEsquerdo) {
+              <div class="info-item">
+                <span class="info-label">Braço Esq.</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.bracoEsquerdo }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.coxaDireita) {
+              <div class="info-item">
+                <span class="info-label">Coxa Dir.</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.coxaDireita }} cm</span>
+              </div>
+            }
+            @if (avaliacao.composicaoCorporal.coxaEsquerda) {
+              <div class="info-item">
+                <span class="info-label">Coxa Esq.</span>
+                <span class="info-value">{{ avaliacao.composicaoCorporal.coxaEsquerda }} cm</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Dobras Cutâneas -->
+      @if (avaliacao.dobrasCutaneas) {
+        <div class="card">
+          <h4 class="section-title"><i class="pi pi-sliders-h"></i> Dobras Cutâneas (mm)</h4>
+          <div class="info-grid">
+            @if (avaliacao.dobrasCutaneas.peitoral) {
+              <div class="info-item">
+                <span class="info-label">Peitoral</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.peitoral }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.axilarMedia) {
+              <div class="info-item">
+                <span class="info-label">Axilar Média</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.axilarMedia }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.tricipital) {
+              <div class="info-item">
+                <span class="info-label">Tricipital</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.tricipital }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.subescapular) {
+              <div class="info-item">
+                <span class="info-label">Subescapular</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.subescapular }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.supraIliaca) {
+              <div class="info-item">
+                <span class="info-label">Supra-ilíaca</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.supraIliaca }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.abdominal) {
+              <div class="info-item">
+                <span class="info-label">Abdominal</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.abdominal }} mm</span>
+              </div>
+            }
+            @if (avaliacao.dobrasCutaneas.coxa) {
+              <div class="info-item">
+                <span class="info-label">Coxa</span>
+                <span class="info-value">{{ avaliacao.dobrasCutaneas.coxa }} mm</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Anamnese -->
+      @if (avaliacao.anamnese) {
+        <div class="card">
+          <h4 class="section-title"><i class="pi pi-heart"></i> Anamnese</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nível de Atividade</span>
+              <span class="info-value">{{ avaliacao.anamnese.nivelAtividade }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Possui Lesão</span>
+              <span class="info-value">
+                <p-tag
+                  [value]="avaliacao.anamnese.possuiLesao ? 'Sim' : 'Não'"
+                  [severity]="avaliacao.anamnese.possuiLesao ? 'danger' : 'success'" />
+              </span>
+            </div>
+            @if (avaliacao.anamnese.possuiLesao && avaliacao.anamnese.descricaoLesao) {
+              <div class="info-item full-width">
+                <span class="info-label">Descrição da Lesão</span>
+                <span class="info-value">{{ avaliacao.anamnese.descricaoLesao }}</span>
+              </div>
+            }
+            <div class="info-item">
+              <span class="info-label">Usa Medicamento</span>
+              <span class="info-value">
+                <p-tag
+                  [value]="avaliacao.anamnese.usaMedicamento ? 'Sim' : 'Não'"
+                  [severity]="avaliacao.anamnese.usaMedicamento ? 'warn' : 'success'" />
+              </span>
+            </div>
+            @if (avaliacao.anamnese.usaMedicamento && avaliacao.anamnese.descricaoMedicamento) {
+              <div class="info-item full-width">
+                <span class="info-label">Medicamento</span>
+                <span class="info-value">{{ avaliacao.anamnese.descricaoMedicamento }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Parecer Técnico -->
+      @if (avaliacao.parecerTecnico) {
+        <div class="card parecer-card">
+          <h4 class="section-title"><i class="pi pi-file-edit"></i> Parecer Técnico</h4>
+          <p class="parecer-text">{{ avaliacao.parecerTecnico }}</p>
+        </div>
+      }
+
+    </div>
+  }
+
+</div>

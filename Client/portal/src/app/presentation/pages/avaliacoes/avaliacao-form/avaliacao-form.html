@@ -1,0 +1,274 @@
+<p-toast />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>{{ isEditMode ? 'Editar Avaliação' : 'Nova Avaliação' }}</h2>
+      <p>{{ isEditMode ? 'Atualize os dados da avaliação física' : 'Registre uma nova avaliação física completa' }}</p>
+    </div>
+    <p-button label="Voltar" icon="pi pi-arrow-left" severity="secondary" [text]="true" routerLink="/avaliacoes" />
+  </div>
+
+  @if (loading) {
+    <div class="loading-state card">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--primary-color)"></i>
+      <p>Carregando avaliação...</p>
+    </div>
+  } @else {
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- ── SEÇÃO A: Identificação ── -->
+    <div class="card section-card">
+      <h3 class="section-title"><i class="pi pi-id-card"></i> Identificação e Contexto</h3>
+
+      <div class="form-grid col-3">
+
+        <div class="form-field full-width">
+          <label class="field-label">Aluno <span class="required">*</span></label>
+          <p-select
+            formControlName="alunoId"
+            [options]="alunos"
+            optionLabel="nome"
+            optionValue="id"
+            placeholder="Selecione o aluno"
+            [filter]="true"
+            filterBy="nome"
+            [showClear]="true"
+            styleClass="w-full"
+            [class.ng-invalid]="hasError('alunoId','required')" />
+          @if (hasError('alunoId','required')) {
+            <small class="field-error">Selecione um aluno.</small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">Tipo de Avaliação <span class="required">*</span></label>
+          <p-select
+            formControlName="tipo"
+            [options]="tipoOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione o tipo"
+            styleClass="w-full" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">Objetivo do Aluno <span class="required">*</span></label>
+          <p-select
+            formControlName="objetivo"
+            [options]="objetivoOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione o objetivo"
+            styleClass="w-full"
+            [class.ng-invalid]="hasError('objetivo','required')" />
+          @if (hasError('objetivo','required')) {
+            <small class="field-error">Selecione o objetivo.</small>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO B: Composição Corporal ── -->
+    <div class="card section-card" formGroupName="composicaoCorporal">
+      <h3 class="section-title"><i class="pi pi-chart-bar"></i> Composição Corporal</h3>
+
+      <p class="section-subtitle">Medidas Principais</p>
+      <div class="form-grid col-4">
+        <div class="form-field">
+          <label class="field-label">Peso (kg) <span class="required">*</span></label>
+          <p-inputnumber
+            formControlName="peso"
+            [minFractionDigits]="1" [maxFractionDigits]="1"
+            placeholder="Ex: 70.5"
+            styleClass="w-full"
+            [class.ng-invalid]="hasError('composicaoCorporal.peso','required')" />
+          @if (hasError('composicaoCorporal.peso','required')) {
+            <small class="field-error">Peso obrigatório.</small>
+          }
+        </div>
+        <div class="form-field">
+          <label class="field-label">Altura (cm) <span class="required">*</span></label>
+          <p-inputnumber
+            formControlName="altura"
+            placeholder="Ex: 175"
+            styleClass="w-full"
+            [class.ng-invalid]="hasError('composicaoCorporal.altura','required')" />
+          @if (hasError('composicaoCorporal.altura','required')) {
+            <small class="field-error">Altura obrigatória.</small>
+          }
+        </div>
+        <div class="form-field">
+          <label class="field-label">Cintura (cm)</label>
+          <p-inputnumber formControlName="cintura" placeholder="Ex: 80" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Abdômen (cm)</label>
+          <p-inputnumber formControlName="abdomen" placeholder="Ex: 85" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Quadril (cm)</label>
+          <p-inputnumber formControlName="quadril" placeholder="Ex: 98" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Tórax (cm)</label>
+          <p-inputnumber formControlName="torax" placeholder="Ex: 100" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Braço Dir. (cm)</label>
+          <p-inputnumber formControlName="bracoDireito" placeholder="Ex: 35" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Braço Esq. (cm)</label>
+          <p-inputnumber formControlName="bracoEsquerdo" placeholder="Ex: 34" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Coxa Dir. (cm)</label>
+          <p-inputnumber formControlName="coxaDireita" placeholder="Ex: 58" styleClass="w-full" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Coxa Esq. (cm)</label>
+          <p-inputnumber formControlName="coxaEsquerda" placeholder="Ex: 57" styleClass="w-full" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO B2: Dobras Cutâneas (apenas Completa) ── -->
+    @if (tipoSelecionado === 'Completa') {
+      <div class="card section-card" formGroupName="dobrasCutaneas">
+        <h3 class="section-title"><i class="pi pi-sliders-h"></i> Dobras Cutâneas <span class="badge-protocol">Pollock 7</span></h3>
+        <p class="section-subtitle">Valores em milímetros (mm)</p>
+
+        <div class="form-grid col-4">
+          <div class="form-field">
+            <label class="field-label">Peitoral</label>
+            <p-inputnumber formControlName="peitoral" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Axilar Média</label>
+            <p-inputnumber formControlName="axilarMedia" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Tricipital</label>
+            <p-inputnumber formControlName="tricipital" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Subescapular</label>
+            <p-inputnumber formControlName="subescapular" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Supra-ilíaca</label>
+            <p-inputnumber formControlName="supraIliaca" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Abdominal</label>
+            <p-inputnumber formControlName="abdominal" placeholder="mm" styleClass="w-full" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Coxa</label>
+            <p-inputnumber formControlName="coxa" placeholder="mm" styleClass="w-full" />
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── SEÇÃO C: Anamnese ── -->
+    <div class="card section-card" formGroupName="anamnese">
+      <h3 class="section-title"><i class="pi pi-heart"></i> Anamnese</h3>
+
+      <div class="form-grid col-2">
+
+        <div class="form-field">
+          <label class="field-label">Nível de Atividade Física <span class="required">*</span></label>
+          <p-select
+            formControlName="nivelAtividade"
+            [options]="nivelAtividadeOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione o nível"
+            styleClass="w-full" />
+        </div>
+
+        <div class="form-field toggle-field">
+          <label class="field-label">Possui lesão ou limitação física?</label>
+          <p-togglebutton
+            formControlName="possuiLesao"
+            onLabel="Sim"
+            offLabel="Não"
+            onIcon="pi pi-check"
+            offIcon="pi pi-times" />
+        </div>
+
+        @if (possuiLesao) {
+          <div class="form-field full-width">
+            <label class="field-label">Descreva a lesão / limitação</label>
+            <input pInputText formControlName="descricaoLesao" placeholder="Ex: Tendinite no ombro direito" />
+          </div>
+        }
+
+        <div class="form-field toggle-field">
+          <label class="field-label">Faz uso diário de medicamento?</label>
+          <p-togglebutton
+            formControlName="usaMedicamento"
+            onLabel="Sim"
+            offLabel="Não"
+            onIcon="pi pi-check"
+            offIcon="pi pi-times" />
+        </div>
+
+        @if (usaMedicamento) {
+          <div class="form-field full-width">
+            <label class="field-label">Qual medicamento?</label>
+            <input pInputText formControlName="descricaoMedicamento" placeholder="Ex: Anti-hipertensivo" />
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO D: Conclusão ── -->
+    <div class="card section-card">
+      <h3 class="section-title"><i class="pi pi-file-edit"></i> Conclusão</h3>
+
+      <div class="form-grid col-2">
+        <div class="form-field full-width">
+          <label class="field-label">Parecer Técnico</label>
+          <textarea
+            pTextarea
+            formControlName="parecerTecnico"
+            rows="4"
+            placeholder="Observações gerais, recomendações e conclusões do profissional..."
+            style="width:100%; resize: vertical;">
+          </textarea>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Data da Próxima Avaliação</label>
+          <p-datepicker
+            formControlName="proximaAvaliacao"
+            dateFormat="dd/mm/yy"
+            [minDate]="hoje"
+            [showIcon]="true"
+            placeholder="dd/mm/aaaa"
+            styleClass="w-full" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Ações ── -->
+    <div class="form-actions">
+      <p-button label="Cancelar" severity="secondary" [text]="true" type="button" routerLink="/avaliacoes" />
+      <p-button
+        [label]="isEditMode ? 'Salvar Alterações' : 'Registrar Avaliação'"
+        icon="pi pi-check"
+        type="submit"
+        [loading]="submitting"
+        [disabled]="submitting" />
+    </div>
+
+  </form>
+  }
+
+</div>

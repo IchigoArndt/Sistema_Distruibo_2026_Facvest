@@ -1,0 +1,120 @@
+<p-toast />
+<p-confirmDialog />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Detalhes do Aluno</h2>
+      <p>Visualize as informações completas do aluno</p>
+    </div>
+    <p-button
+      label="Voltar"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      [text]="true"
+      routerLink="/alunos" />
+  </div>
+
+  @if (loading) {
+    <div class="loading-state card">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--primary-color)"></i>
+      <p>Carregando dados do aluno...</p>
+    </div>
+  }
+
+  @if (!loading && aluno) {
+    <div class="detail-layout">
+
+      <div class="card profile-card">
+        <div class="profile-avatar">
+          <p-avatar
+            [label]="getAvatar(aluno.nome)"
+            shape="circle"
+            size="xlarge"
+            styleClass="avatar-xl" />
+        </div>
+        <h3 class="profile-name">{{ aluno.nome }}</h3>
+        <p-tag
+          [value]="aluno.status"
+          [severity]="getSeverity(aluno.status)"
+          styleClass="profile-tag" />
+
+        <div class="profile-actions">
+          <p-button
+            label="Editar"
+            icon="pi pi-pencil"
+            severity="warn"
+            [routerLink]="['/alunos', aluno.id, 'editar']"
+            styleClass="w-full" />
+          <p-button
+            label="Excluir"
+            icon="pi pi-trash"
+            severity="danger"
+            [outlined]="true"
+            (onClick)="confirmDelete()"
+            styleClass="w-full" />
+        </div>
+      </div>
+
+      <div class="info-column">
+
+        <div class="card info-card">
+          <h4 class="section-title">
+            <i class="pi pi-id-card"></i>
+            Informações Pessoais
+          </h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">ID</span>
+              <span class="info-value">#{{ aluno.id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Nome</span>
+              <span class="info-value">{{ aluno.nome }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">E-mail</span>
+              <span class="info-value">
+                <a [href]="'mailto:' + aluno.email" class="info-link">{{ aluno.email }}</a>
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Telefone</span>
+              <span class="info-value">{{ aluno.telefone }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status</span>
+              <span class="info-value">
+                <p-tag [value]="aluno.status" [severity]="getSeverity(aluno.status)" />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card info-card">
+          <h4 class="section-title">
+            <i class="pi pi-clipboard"></i>
+            Avaliações
+          </h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Última Avaliação</span>
+              <span class="info-value">{{ aluno.ultimaAvaliacao ?? '—' }}</span>
+            </div>
+          </div>
+          <div class="evaluation-action">
+            <p-button
+              label="Ver Avaliações"
+              icon="pi pi-clipboard"
+              severity="success"
+              [outlined]="true"
+              routerLink="/avaliacoes" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

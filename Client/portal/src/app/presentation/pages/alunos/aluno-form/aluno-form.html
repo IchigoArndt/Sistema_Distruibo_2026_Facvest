@@ -1,0 +1,118 @@
+<p-toast />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>{{ isEditMode ? 'Editar Aluno' : 'Novo Aluno' }}</h2>
+      <p>{{ isEditMode ? 'Atualize os dados do aluno' : 'Preencha os dados para cadastrar um novo aluno' }}</p>
+    </div>
+    <p-button
+      label="Voltar"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      [text]="true"
+      routerLink="/alunos" />
+  </div>
+
+  <div class="card form-card">
+
+    @if (loading) {
+      <div class="loading-state">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--primary-color)"></i>
+        <p>Carregando dados do aluno...</p>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="form-grid">
+
+          <div class="form-field full-width">
+            <label for="nome" class="field-label">
+              Nome completo <span class="required">*</span>
+            </label>
+            <input
+              id="nome"
+              pInputText
+              formControlName="nome"
+              placeholder="Ex: João da Silva"
+              [class.ng-invalid]="hasError('nome', 'required') || hasError('nome', 'minlength')" />
+            @if (hasError('nome', 'required')) {
+              <small class="field-error">Nome é obrigatório.</small>
+            } @else if (hasError('nome', 'minlength')) {
+              <small class="field-error">Nome deve ter ao menos 3 caracteres.</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="email" class="field-label">
+              E-mail <span class="required">*</span>
+            </label>
+            <input
+              id="email"
+              pInputText
+              type="email"
+              formControlName="email"
+              placeholder="Ex: joao@email.com"
+              [class.ng-invalid]="hasError('email', 'required') || hasError('email', 'email')" />
+            @if (hasError('email', 'required')) {
+              <small class="field-error">E-mail é obrigatório.</small>
+            } @else if (hasError('email', 'email')) {
+              <small class="field-error">Informe um e-mail válido.</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="telefone" class="field-label">
+              Telefone <span class="required">*</span>
+            </label>
+            <input
+              id="telefone"
+              pInputText
+              formControlName="telefone"
+              placeholder="(47) 99999-0000"
+              (input)="formatTelefone($event)"
+              [class.ng-invalid]="hasError('telefone', 'required') || hasError('telefone', 'pattern')" />
+            @if (hasError('telefone', 'required')) {
+              <small class="field-error">Telefone é obrigatório.</small>
+            } @else if (hasError('telefone', 'pattern')) {
+              <small class="field-error">Formato: (XX) XXXXX-XXXX</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="status" class="field-label">
+              Status <span class="required">*</span>
+            </label>
+            <p-select
+              inputId="status"
+              formControlName="status"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Selecione o status" />
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <p-button
+            label="Cancelar"
+            severity="secondary"
+            [text]="true"
+            type="button"
+            routerLink="/alunos" />
+          <p-button
+            [label]="isEditMode ? 'Salvar Alterações' : 'Cadastrar Aluno'"
+            icon="pi pi-check"
+            type="submit"
+            [loading]="submitting"
+            [disabled]="submitting" />
+        </div>
+
+      </form>
+    }
+
+  </div>
+
+</div>
