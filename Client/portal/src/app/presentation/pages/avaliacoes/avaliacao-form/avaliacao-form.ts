@@ -211,7 +211,7 @@ export class AvaliacaoFormComponent implements OnInit {
 
     const payload = {
       alunoId:             raw.alunoId,
-      alunoNome:           alunoSelecionado?.nome ?? '',
+      alunoNome:           alunoSelecionado?.name ?? '',
       data:                this.formatDate(new Date()) ?? '',
       tipo:                raw.tipo,
       objetivo:            raw.objetivo,

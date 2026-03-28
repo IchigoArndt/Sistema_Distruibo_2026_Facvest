@@ -1,39 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { AlunoModel } from '../models/aluno.model';
+import { environment } from '../../../environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AlunoDataSource {
+
+  private apiUrl = `${environment.apiUrl}/Student`;
+
   private mockData: AlunoModel[] = [
-    { id: 1, nome: 'Ana Silva',    email: 'ana@email.com',    telefone: '(47) 99999-0001', status: 'Ativo',   ultima_avaliacao: '15/03/2026' },
-    { id: 2, nome: 'Bruno Mendes', email: 'bruno@email.com',  telefone: '(47) 99999-0002', status: 'Ativo',   ultima_avaliacao: '14/03/2026' },
-    { id: 3, nome: 'Carla Souza',  email: 'carla@email.com',  telefone: '(47) 99999-0003', status: 'Inativo', ultima_avaliacao: '12/03/2026' },
-    { id: 4, nome: 'Diego Lima',   email: 'diego@email.com',  telefone: '(47) 99999-0004', status: 'Ativo',   ultima_avaliacao: '10/03/2026' },
-    { id: 5, nome: 'Eva Martins',  email: 'eva@email.com',    telefone: '(47) 99999-0005', status: 'Ativo',   ultima_avaliacao: '08/03/2026' },
+    { id: 1, name: 'Ana Silva',    email: 'ana@email.com',    cellPhone: '47999990001', status: 1, lastReview: '15/03/2026', age: 25 },
+    { id: 2, name: 'Bruno Mendes', email: 'bruno@email.com',  cellPhone: '47999990002', status: 1, lastReview: '14/03/2026', age: 25 },
+    { id: 3, name: 'Carla Souza',  email: 'carla@email.com',  cellPhone: '47999990003', status: 2, lastReview: '12/03/2026', age: 25 },
+    { id: 4, name: 'Diego Lima',   email: 'diego@email.com',  cellPhone: '47999990004', status: 1, lastReview: '10/03/2026', age: 25 },
+    { id: 5, name: 'Eva Martins',  email: 'eva@email.com',    cellPhone: '47999990005', status: 1, lastReview: '08/03/2026', age: 25 },
   ];
 
+  constructor(private http: HttpClient) {}
+
   getAll(): Observable<AlunoModel[]> {
-    return of([...this.mockData]);
+    return this.http.get<AlunoModel[]>(`${this.apiUrl}/GetAll`);
   }
 
   getById(id: number): Observable<AlunoModel | undefined> {
-    return of(this.mockData.find(a => a.id === id));
+    return this.http.get<AlunoModel>(`${this.apiUrl}/GetById/${id}`);
   }
 
   create(aluno: Omit<AlunoModel, 'id'>): Observable<AlunoModel> {
     const newAluno: AlunoModel = { ...aluno, id: this.mockData.length + 1 };
-    this.mockData.push(newAluno);
+    this.http.post<AlunoModel>(`${this.apiUrl}/Create`, aluno).subscribe(response => {
+      console.log(response);
+    });
     return of(newAluno);
   }
 
   update(id: number, aluno: Partial<AlunoModel>): Observable<AlunoModel> {
-    const index = this.mockData.findIndex(a => a.id === id);
-    this.mockData[index] = { ...this.mockData[index], ...aluno };
-    return of(this.mockData[index]);
+    return this.http.put<void>(`${this.apiUrl}/UpdateStudent/${id}`, aluno).pipe(
+      switchMap(() => this.http.get<AlunoModel>(`${this.apiUrl}/GetById/${id}`))
+    );
   }
 
   delete(id: number): Observable<void> {
-    this.mockData = this.mockData.filter(a => a.id !== id);
-    return of(undefined);
+    return this.http.delete<void>(`${this.apiUrl}/DeleteStudent/${id}`);
   }
 }

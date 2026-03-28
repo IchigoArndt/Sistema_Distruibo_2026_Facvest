@@ -1,8 +1,9 @@
 export interface Aluno {
   id: number;
-  nome: string;
+  name: string;
   email: string;
-  telefone: string;
+  cellPhone: string;
   status: 'Ativo' | 'Inativo';
-  ultimaAvaliacao?: string;
+  lastReview?: string;
+  age: number;
 }

@@ -30,7 +30,16 @@ export class AlunoRepositoryImpl extends AlunoRepository {
   }
 
   update(id: number, aluno: Partial<Aluno>): Observable<Aluno> {
-    return this.dataSource.update(id, aluno).pipe(
+    const partialModel = {
+      ...aluno,
+      status: aluno.status !== undefined
+        ? (aluno.status === 'Ativo' ? 1 : 2)
+        : undefined,
+      cellPhone: aluno.cellPhone !== undefined
+        ? aluno.cellPhone.replace(/\D/g, '')
+        : undefined
+    };
+    return this.dataSource.update(id, partialModel).pipe(
       map(toAlunoEntity)
     );
   }

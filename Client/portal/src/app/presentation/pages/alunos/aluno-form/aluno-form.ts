@@ -59,10 +59,11 @@ export class AlunoFormComponent implements OnInit {
 
   private buildForm(): void {
     this.form = this.fb.group({
-      nome:     ['', [Validators.required, Validators.minLength(3)]],
-      email:    ['', [Validators.required, Validators.email]],
-      telefone: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
-      status:   ['Ativo', Validators.required],
+      name:      ['', [Validators.required, Validators.minLength(3)]],
+      email:     ['', [Validators.required, Validators.email]],
+      cellPhone: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
+      age:       [null, [Validators.required, Validators.min(1)]],
+      status:    ['Ativo', Validators.required],
     });
   }
 
@@ -71,10 +72,11 @@ export class AlunoFormComponent implements OnInit {
     this.getAlunoByIdUseCase.execute(id).subscribe({
       next: (aluno) => {
         this.form.patchValue({
-          nome:     aluno.nome,
-          email:    aluno.email,
-          telefone: aluno.telefone,
-          status:   aluno.status,
+          name:      aluno.name,
+          email:     aluno.email,
+          cellPhone: aluno.cellPhone,
+          age:       aluno.age,
+          status:    aluno.status,
         });
         this.loading = false;
       },
@@ -120,7 +122,7 @@ export class AlunoFormComponent implements OnInit {
     return !!(control?.hasError(error) && control.touched);
   }
 
-  formatTelefone(event: Event): void {
+  formatCellPhone(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, '');
     if (value.length > 11) value = value.slice(0, 11);
@@ -133,7 +135,7 @@ export class AlunoFormComponent implements OnInit {
       value = `(${value}`;
     }
 
-    this.form.get('telefone')!.setValue(value, { emitEvent: false });
+    this.form.get('cellPhone')!.setValue(value, { emitEvent: false });
     input.value = value;
   }
 }

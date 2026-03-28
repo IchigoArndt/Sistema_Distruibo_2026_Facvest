@@ -29,12 +29,12 @@
       <div class="card profile-card">
         <div class="profile-avatar">
           <p-avatar
-            [label]="getAvatar(aluno.nome)"
+            [label]="getAvatar(aluno.name)"
             shape="circle"
             size="xlarge"
             styleClass="avatar-xl" />
         </div>
-        <h3 class="profile-name">{{ aluno.nome }}</h3>
+        <h3 class="profile-name">{{ aluno.name }}</h3>
         <p-tag
           [value]="aluno.status"
           [severity]="getSeverity(aluno.status)"
@@ -71,7 +71,7 @@
             </div>
             <div class="info-item">
               <span class="info-label">Nome</span>
-              <span class="info-value">{{ aluno.nome }}</span>
+              <span class="info-value">{{ aluno.name }}</span>
             </div>
             <div class="info-item">
               <span class="info-label">E-mail</span>
@@ -81,7 +81,11 @@
             </div>
             <div class="info-item">
               <span class="info-label">Telefone</span>
-              <span class="info-value">{{ aluno.telefone }}</span>
+              <span class="info-value">{{ aluno.cellPhone }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Idade</span>
+              <span class="info-value">{{ aluno.age }} anos</span>
             </div>
             <div class="info-item">
               <span class="info-label">Status</span>
@@ -92,26 +96,28 @@
           </div>
         </div>
 
-        <div class="card info-card">
-          <h4 class="section-title">
-            <i class="pi pi-clipboard"></i>
-            Avaliações
-          </h4>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">Última Avaliação</span>
-              <span class="info-value">{{ aluno.ultimaAvaliacao ?? '—' }}</span>
+        @if (aluno.lastReview) {
+          <div class="card info-card">
+            <h4 class="section-title">
+              <i class="pi pi-clipboard"></i>
+              Avaliações
+            </h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Última Avaliação</span>
+                <span class="info-value">{{ aluno.lastReview }}</span>
+              </div>
+            </div>
+            <div class="evaluation-action">
+              <p-button
+                label="Ver Avaliações"
+                icon="pi pi-clipboard"
+                severity="success"
+                [outlined]="true"
+                routerLink="/avaliacoes" />
             </div>
           </div>
-          <div class="evaluation-action">
-            <p-button
-              label="Ver Avaliações"
-              icon="pi pi-clipboard"
-              severity="success"
-              [outlined]="true"
-              routerLink="/avaliacoes" />
-          </div>
-        </div>
+        }
 
       </div>
     </div>

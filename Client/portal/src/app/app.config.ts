@@ -11,6 +11,7 @@ import { AlunoRepositoryImpl } from './data/repositories/aluno.repository.impl';
 import { AvaliacaoRepository } from './domain/repositories/avaliacao.repository';
 import { AvaliacaoRepositoryImpl } from './data/repositories/avaliacao.repository.impl';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
     providePrimeNG({
       theme: {
         preset: Aura,

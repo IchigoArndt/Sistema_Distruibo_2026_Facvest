@@ -61,8 +61,8 @@ export class AlunoDetalheComponent implements OnInit {
     });
   }
 
-  getAvatar(nome: string): string {
-    return nome.charAt(0).toUpperCase();
+  getAvatar(name: string): string {
+    return name.charAt(0).toUpperCase();
   }
 
   getSeverity(status: string): 'success' | 'danger' | undefined {
@@ -71,7 +71,7 @@ export class AlunoDetalheComponent implements OnInit {
 
   confirmDelete(): void {
     this.confirmationService.confirm({
-      message: `Deseja realmente excluir o aluno <strong>${this.aluno?.nome}</strong>? Esta ação não pode ser desfeita.`,
+      message: `Deseja realmente excluir o aluno <strong>${this.aluno?.name}</strong>? Esta ação não pode ser desfeita.`,
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Excluir',

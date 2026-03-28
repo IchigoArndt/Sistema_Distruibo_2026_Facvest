@@ -32,7 +32,7 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="nome">Aluno <p-sortIcon field="nome" /></th>
+          <th pSortableColumn="name">Aluno <p-sortIcon field="name" /></th>
           <th>E-mail</th>
           <th>Telefone</th>
           <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
@@ -45,14 +45,14 @@
         <tr>
           <td>
             <div class="aluno-cell">
-              <p-avatar [label]="getAvatar(aluno.nome)" shape="circle" size="normal" />
-              <span class="aluno-nome">{{ aluno.nome }}</span>
+              <p-avatar [label]="getAvatar(aluno.name)" shape="circle" size="normal" />
+              <span class="aluno-nome">{{ aluno.name }}</span>
             </div>
           </td>
           <td>{{ aluno.email }}</td>
-          <td>{{ aluno.telefone }}</td>
+          <td>{{ aluno.cellPhone }}</td>
           <td><p-tag [value]="aluno.status" [severity]="getSeverity(aluno.status)" /></td>
-          <td>{{ aluno.ultimaAvaliacao ?? '—' }}</td>
+          <td>{{ aluno.lastReview ?? '—' }}</td>
           <td>
             <div class="actions">
               <p-button
@@ -81,7 +81,8 @@
                 severity="danger"
                 [text]="true"
                 [rounded]="true"
-                pTooltip="Excluir"
+                [disabled]="aluno.status === 'Inativo'"
+                [pTooltip]="aluno.status === 'Inativo' ? 'Aluno inativo' : 'Excluir'"
                 (onClick)="confirmDelete(aluno)" />
             </div>
           </td>

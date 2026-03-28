@@ -10,6 +10,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { Aluno } from '../../../domain/entities/aluno.entity';
 import { GetAlunosUseCase } from '../../../domain/usecases/aluno/get-alunos.usecase';
@@ -29,6 +30,7 @@ import { DeleteAlunoUseCase } from '../../../domain/usecases/aluno/delete-aluno.
     InputIconModule,
     ToastModule,
     ConfirmDialogModule,
+    TooltipModule,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './alunos.html',
@@ -56,8 +58,8 @@ export class AlunosComponent implements OnInit {
     });
   }
 
-  getAvatar(nome: string): string {
-    return nome.charAt(0).toUpperCase();
+  getAvatar(name: string): string {
+    return name.charAt(0).toUpperCase();
   }
 
   getSeverity(status: string): 'success' | 'danger' | undefined {
@@ -68,7 +70,7 @@ export class AlunosComponent implements OnInit {
     if (!this.searchTerm) return this.alunos;
     const term = this.searchTerm.toLowerCase();
     return this.alunos.filter(a =>
-      a.nome.toLowerCase().includes(term) ||
+      a.name.toLowerCase().includes(term) ||
       a.email.toLowerCase().includes(term)
     );
   }
@@ -83,7 +85,7 @@ export class AlunosComponent implements OnInit {
 
   confirmDelete(aluno: Aluno): void {
     this.confirmationService.confirm({
-      message: `Deseja realmente excluir o aluno <strong>${aluno.nome}</strong>?`,
+      message: `Deseja realmente excluir o aluno <strong>${aluno.name}</strong>?`,
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Excluir',
