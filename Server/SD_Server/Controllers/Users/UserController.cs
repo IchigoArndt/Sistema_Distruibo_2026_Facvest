@@ -2,11 +2,25 @@
 
 namespace SD_Server.Api.Controllers.Users
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
     {
-        public IActionResult Index()
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequest request)
         {
-            return View();
+            if (request.Email == "teste@ndd.com" && request.Password == "123456")
+            {
+                return Ok(new { Token = "token-gerado-bearer-token" });
+            }
+
+            return Unauthorized();
         }
+    }
+
+    public class LoginRequest
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }
