@@ -25,24 +25,17 @@ builder.Host.UseSerilog((_, _, configuration) =>
         configuration.WriteTo.MongoDB(mongo, "LogsAuth");
 });
 
-//builder.Services.AddDbServices(builder.Configuration);
-//builder.Services.AddStaticFiles();
+builder.Services.AddDbServices(builder.Configuration);
 
 builder.Services.AddControllers();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
 
-// Criação do container
 var container = new Container();
-
 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-//container.Register<IFileConverter, FileConverter>(Lifestyle.Transient);
-
-// Registrar serviços padrão
 builder.Services.AddDefaultServices<Program>(container);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -62,22 +55,15 @@ var app = builder.Build();
 
 app.MapOpenApi();
 
-// Configurar Scalar
 app.MapScalarApiReference(opt => opt
-        .WithTitle("SD_Server_Auth")
-        .WithTheme(ScalarTheme.DeepSpace)
-        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-    );
+    .WithTitle("SD_Server_Auth")
+    .WithTheme(ScalarTheme.DeepSpace)
+    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient));
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-// Configurar CORS (antes de endpoints)
 app.UseCors(MyAllowSpecificOrigins);
 
-//app.UseStaticFiles();
+app.MapControllers();
 
 app.Run();

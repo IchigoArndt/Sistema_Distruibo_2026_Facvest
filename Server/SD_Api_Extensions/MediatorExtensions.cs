@@ -20,6 +20,7 @@ namespace SD_Api_Extensions
             {
                 cfg.RegisterServicesFromAssemblies([.. assemblies]);
                 cfg.AddOpenBehavior(typeof(ValidationPipeline<,>));
+                cfg.Lifetime = ServiceLifetime.Scoped;
             });
         }
     }

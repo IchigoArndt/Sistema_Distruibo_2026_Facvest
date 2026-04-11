@@ -18,5 +18,7 @@
     <Project Path="../SD_Api_Extensions/SD_Api_Extensions.csproj" />
     <Project Path="../SD_SharedKernel/SD_SharedKernel.csproj" />
   </Folder>
-  <Folder Name="/6 - Tests/" />
+  <Folder Name="/6 - Tests/">
+    <Project Path="../6-tests/SD_Server.Auth.Tests/SD_Server.Auth.Tests.csproj" />
+  </Folder>
 </Solution>

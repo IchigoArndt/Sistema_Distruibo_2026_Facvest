@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SD_Server.Domain.Features.Students;
+using SD_Server.Domain.Features.Users;
 
 namespace SD_Server.Infra.Data.Context
 {
@@ -17,6 +18,8 @@ namespace SD_Server.Infra.Data.Context
     public class SdServerDbContext(DbContextOptions<SdServerDbContext> options, ILoggerFactory? loggerFactory = null) : DbContext(options)
     {
         public DbSet<Student> Students { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

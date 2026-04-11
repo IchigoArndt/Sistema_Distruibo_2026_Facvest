@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SD_Server.Auth.Domain;
 using SD_Server.Auth.DTO;
 using SD_SharedKernel.Helpers;
 

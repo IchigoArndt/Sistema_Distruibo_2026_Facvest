@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SD_Api_Base.Base;
 using SD_Server.Application.Features.Students.Commands.Create;
@@ -15,6 +16,7 @@ namespace SD_Server.Api.Controllers.Student
     public class StudentController(IMediator mediator, IMapper mapper) : ApiControllerBase(mapper)
     {
         [HttpPost("Create")]
+        [Authorize(Roles = "Admin,Professional")]
         public async Task<IActionResult> Create(StudentCreateCommand request)
         {
             var result = await mediator.Send(request);
@@ -23,6 +25,7 @@ namespace SD_Server.Api.Controllers.Student
         }
 
         [HttpGet("GetAll")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             var query = new StudentCollectionHandler.Query();
@@ -33,6 +36,7 @@ namespace SD_Server.Api.Controllers.Student
         }
 
         [HttpGet("GetById/{id}")]
+        [Authorize(Roles = "Admin,Professional")]
         public async Task<IActionResult> GetById(int id)
         {
             var query = new StudentDetailCommand() { Id = id };
@@ -43,6 +47,7 @@ namespace SD_Server.Api.Controllers.Student
         }
 
         [HttpPut("UpdateStudent/{id}")]
+        [Authorize(Roles = "Professional")]
         public async Task<IActionResult> UpdateStudent(int id, [FromBody] StudentEditCommand command)
         {
             command.Id = id;
@@ -53,6 +58,7 @@ namespace SD_Server.Api.Controllers.Student
         }
 
         [HttpDelete("DeleteStudent/{id}")]
+        [Authorize(Roles = "Admin,Professional")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             var query = new StudentDeleteCommand() { Id = id };

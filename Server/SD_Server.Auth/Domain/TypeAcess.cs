@@ -1,7 +1,9 @@
 ﻿namespace SD_Server.Auth.Domain
 {
-    public enum TypeAcess : byte //Aqui deverá vir todas as enumerações de acesso ao sistema
+    public enum TypeAcess : byte
     {
-        admin = 0
+        admin = 0,
+        Professional = 1,
+        Student = 2,
     }
 }

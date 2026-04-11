@@ -12,31 +12,41 @@ Visão geral do repositório e como os três principais módulos se encaixam. Pa
 
 ## Visão do sistema
 
-O ecossistema combina **portal web** (profissional de educação física), **aplicativo mobile** (perfil de aluno, no contexto do FitPortal) e **API REST** em JSON. Os clientes conversam com o backend via HTTP; o servidor concentra regras, autenticação e persistência (quando implementada).
+O ecossistema combina **portal web** (profissional de educação física), **aplicativo mobile** (perfil de aluno) e **API REST** em JSON. Os clientes conversam com o backend via HTTP; o servidor concentra regras de negócio, autenticação JWT e persistência via Entity Framework Core.
 
 ---
 
 ## Server — API (`Server/`)
 
 - **Stack:** C# / **.NET 10**, Web API REST.
-- **Organização:** Clean Architecture com vários projetos: `SD_Server` (API principal), `SD_Server.Auth` (login e JWT), `SD_Server.Application`, `SD_Server.Domain`, `SD_Server.Infra`, além de `SD_Api_Base`, `SD_Api_Extensions` e `SD_SharedKernel`.
-- **Padrões:** CQRS com **MediatR**, validação com **FluentValidation**, **AutoMapper**, **SimpleInjector** integrado ao DI do ASP.NET Core.
-- **Respostas:** tipo funcional `Result` / `Option` no shared kernel; controllers base tratam sucesso e falha de forma uniforme.
-- **Auth:** JWT (claims, expiração, issuer/audience); documentação interativa com **Scalar**.
-- **Estado atual:** login e partes do domínio ainda com lógica temporária ou mock; banco de dados e integrações completas estão em evolução conforme o próprio guia do servidor.
+- **Organização:** Clean Architecture com os projetos:
+  - `SD_Server` — API principal (endpoints de domínio)
+  - `SD_Server.Auth` — API de autenticação (emissão de JWT)
+  - `SD_Server.Application` — Casos de uso / Handlers CQRS
+  - `SD_Server.Domain` — Entidades, interfaces de repositório, enums
+  - `SD_Server.Infra.Data` — EF Core, DbContext, Repositories, Migrations
+  - `SD_Server.Infra` — Infraestrutura geral
+  - `SD_Api_Base`, `SD_Api_Extensions`, `SD_SharedKernel` — Utilitários transversais
+  - `6-tests/SD_Server.Auth.Tests` — Testes unitários (xUnit + Moq + FluentAssertions)
+- **Padrões:** CQRS com **MediatR**, validação com **FluentValidation**, **SimpleInjector** integrado ao DI do ASP.NET Core.
+- **Respostas:** tipo funcional `Result<TFailure, TSuccess>` no shared kernel; controllers base tratam sucesso e falha de forma uniforme.
+- **Auth:** JWT (claims: id, email, nome, role; expiração de 30 min; issuer/audience `MatrixCompetency`); documentação interativa com **Scalar** (tema DeepSpace) com suporte a Bearer token.
+- **Usuários:** tabela unificada `tb_Users` com `TypeUserEnum` (Admin, Professional, Student); senhas armazenadas com hash BCrypt.
+- **Transações:** padrão Unit of Work (`IUnitOfWork`) garantindo atomicidade nas operações de criação, edição e exclusão de alunos (Student + User criados/atualizados/removidos na mesma transação).
+- **Testes:** 26 testes unitários cobrindo o handler de autenticação e o validator de login — todos passando.
 
 ---
 
 ## Client — FitPortal (`Client/portal/`)
 
 - **Stack:** **Angular 20**, **TypeScript**, **PrimeNG 20**, PrimeIcons, **Chart.js**, **RxJS**, **SCSS**.
-- **Papel:** portal do **profissional** (alunos, avaliações, dashboard, perfil).
+- **Papel:** portal do **profissional** (gestão de alunos, avaliações, dashboard, perfil).
 - **Arquitetura:** Clean Architecture em quatro camadas no front:
   - **Core** — guards, interceptor JWT, `AuthService`.
   - **Domain** — entidades, repositórios (contratos), use cases.
   - **Data** — models, datasources (hoje em grande parte **mock**), implementações de repositório.
   - **Presentation** — layout (sidebar/topbar), páginas com lazy loading; componentes não acessam Data diretamente.
-- **Estado atual:** dados simulados até o backend estar disponível; troca de datasources para HTTP deve preservar Domain e Presentation.
+- **Estado atual:** dados simulados até o backend estar disponível; troca de datasources para HTTP preserva Domain e Presentation intactos.
 
 ---
 
@@ -45,7 +55,7 @@ O ecossistema combina **portal web** (profissional de educação física), **apl
 - **Stack:** **Flutter** (SDK), estrutura por feature.
 - **Arquitetura:** inspirada em Clean Architecture — **presentation** (telas, estilos), **domain** (entidades, interfaces de serviço), **data** ainda a implementar (repositórios, API).
 - **Fluxo atual:** rotas `/login` e `/home`; navegação com limpeza de pilha entre login e home.
-- **Estado atual:** autenticação ainda hardcoded; falta camada data, integração real com backend, asset de fundo do login, expansão de testes e eventual gerenciamento de estado (Provider, Riverpod, BLoC, etc.).
+- **Estado atual:** autenticação ainda hardcoded; falta camada data, integração real com backend, expansão de testes e eventual gerenciamento de estado (Provider, Riverpod, BLoC, etc.).
 
 ---
 

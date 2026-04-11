@@ -1,5 +1,5 @@
-using SD_Server.Domain.Common;
-using SD_Server.Domain.Enums;
+using SD_Server.Domain.Base;
+using SD_Server.Domain.Enum;
 
 namespace SD_Server.Domain.Features.Professionals
 {

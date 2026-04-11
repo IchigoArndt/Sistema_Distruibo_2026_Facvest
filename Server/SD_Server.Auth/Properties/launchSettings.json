@@ -8,7 +8,7 @@
       "applicationUrl": "http://localhost:5159",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Secret": "o69nEJu3F3Z3Pg6YN2TpNahDkxAmcbOGZzJzcQpsS0A=",
+        "Secret": "SD_Server_Secret_Key_2026_Facvest_MatrixCompetency_32chars!",
         "Connection_Sql": "Server=localhost;Database=SistemaDistribuicao;User Id=sa;Password=1234;TrustServerCertificate=True;MultipleActiveResultSets=True;",
         "Connection_Mongo": "mongodb://localhost:27017/LogsSistemaDistribuicao"
       }
@@ -20,7 +20,7 @@
       "applicationUrl": "https://localhost:7289;http://localhost:5159",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Secret": "o69nEJu3F3Z3Pg6YN2TpNahDkxAmcbOGZzJzcQpsS0A=",
+        "Secret": "SD_Server_Secret_Key_2026_Facvest_MatrixCompetency_32chars!",
         "Connection_Sql": "Server=localhost;Database=SistemaDistribuicao;User Id=sa;Password=1234;TrustServerCertificate=True;MultipleActiveResultSets=True;",
         "Connection_Mongo": "mongodb://localhost:27017/LogsSistemaDistribuicao"
       }

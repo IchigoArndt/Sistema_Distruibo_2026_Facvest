@@ -12,5 +12,6 @@ namespace SD_Server.Application.Features.Students.Commands.Edit
         public string? Email { get; set; }
         public int? Age { get; set; }
         public string? CellPhone { get; set; }
+        public string? Password { get; set; }
     }
 }
