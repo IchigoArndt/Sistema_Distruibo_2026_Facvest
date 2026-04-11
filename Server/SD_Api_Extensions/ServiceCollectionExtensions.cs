@@ -4,9 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using SD_Server.Application;
+using SD_Server.Domain.Base;
 using SD_Server.Infra.Data;
 using SD_Server.Infra.Data.Context;
 using SD_Server.Infra.Data.DbMigrator;
+using SD_Server.Infra.Data.UnitOfWork;
 using System.Reflection;
 
 namespace SD_Api_Extensions
@@ -40,6 +42,7 @@ namespace SD_Api_Extensions
             });
 
             services.AddScoped<DatabaseMigrator>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             AddRepositories(services);
         }

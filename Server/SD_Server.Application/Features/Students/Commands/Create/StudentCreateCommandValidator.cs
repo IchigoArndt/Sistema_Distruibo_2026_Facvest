@@ -1,7 +1,5 @@
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SD_Server.Application.Helpers;
 
 namespace SD_Server.Application.Features.Students.Commands.Create
 {
@@ -24,6 +22,8 @@ namespace SD_Server.Application.Features.Students.Commands.Create
             RuleFor(x => x.CellPhone)
                 .NotEmpty().WithMessage("O número de celular do aluno é obrigatório.")
                 .Matches(@"^\d{10,11}$").WithMessage("O número de celular deve conter apenas dígitos e ter entre 10 e 11 caracteres.");
+
+            RuleFor(x => x.Password).ApplyPasswordRules(); //Valida as regras em um helper específico para validação de senha, onde estão definidas as regras de complexidade e formatação da senha.
         }
     }
 }

@@ -2,16 +2,23 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SD_Server.Application.Features.Students.Commands.Create;
 using SD_Server.Application.Helpers;
+using SD_Server.Domain.Base;
 using SD_Server.Domain.Enum;
 using SD_Server.Domain.Features.Students;
+using SD_Server.Domain.Features.Users;
 using SD_SharedKernel.Helpers;
+using BC = BCrypt.Net.BCrypt;
 using Unit = SD_SharedKernel.Helpers.Unit;
 
 namespace SD_Server.Application.Features.Students.Handlers
 {
     public class StudentCreateHandler
     {
-        public class Handler(ILogger<Handler> logger, IStudentRepository repository) : IRequestHandler<StudentCreateCommand, Result<Exception, Unit>>
+        public class Handler(
+            ILogger<Handler> logger,
+            IStudentRepository repository,
+            IUserRepository userRepository,
+            IUnitOfWork unitOfWork) : IRequestHandler<StudentCreateCommand, Result<Exception, Unit>>
         {
             public async Task<Result<Exception, Unit>> Handle(StudentCreateCommand request, CancellationToken cancellationToken)
             {
@@ -21,47 +28,62 @@ namespace SD_Server.Application.Features.Students.Handlers
                 if (validationResult.IsFailure)
                     return validationResult.Failure;
 
-                var student = new Student();
+                await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-                var mappingResult = MapFrom(request, ref student);
-
-                if (mappingResult.IsFailure)
+                try
                 {
-                    logger.LogError($"Erro ao mapear o comando para a entidade Student. Detalhes: {mappingResult.Failure.Message}");
-                    return new Exception(mappingResult.Failure.Message);
+                    var student = new Student
+                    {
+                        Age = request.Age,
+                        CellPhone = request.CellPhone,
+                        Email = request.Email,
+                        Name = request.Name,
+                        Status = StatusEnum.Active,
+                    };
+
+                    var createStudentResult = await repository.AddAsync(student);
+
+                    if (createStudentResult.IsFailure)
+                    {
+                        logger.LogError("Erro ao criar o aluno no repositório. Detalhes: {Message}", createStudentResult.Failure.Message);
+                        await unitOfWork.RollbackAsync(cancellationToken);
+                        return createStudentResult.Failure;
+                    }
+
+                    logger.LogInformation("Aluno criado com sucesso. Id: {Id}", createStudentResult.Success);
+
+                    var user = new User
+                    {
+                        Email        = request.Email,
+                        Name         = request.Name,
+                        Status       = StatusEnum.Active,
+                        TypeAccess   = TypeUserEnum.Student,
+                        CreatedAt    = DateTime.UtcNow,
+                        EntityId     = createStudentResult.Success,
+                        PasswordHash = BC.HashPassword(request.Password)
+                    };
+
+                    var createUserResult = await userRepository.AddAsync(user);
+
+                    if (createUserResult.IsFailure)
+                    {
+                        logger.LogError("Erro ao criar o usuário no repositório. Detalhes: {Message}", createUserResult.Failure.Message);
+                        await unitOfWork.RollbackAsync(cancellationToken);
+                        return createUserResult.Failure;
+                    }
+
+                    await unitOfWork.CommitAsync(cancellationToken);
+
+                    logger.LogInformation("Usuário criado com sucesso. Id: {Id}", createUserResult.Success);
+
+                    return Unit.Sucessful;
                 }
-
-                student = mappingResult.Success;
-
-                var createResult = await repository.AddAsync(student);
-
-                if(createResult.IsFailure)
+                catch (Exception ex)
                 {
-                    logger.LogError($"Erro ao criar o aluno no repositório. Detalhes: {createResult.Failure.Message}");
-
-                    return new Exception(createResult.Failure.Message);
+                    logger.LogError(ex, "Erro inesperado ao criar aluno e usuário. Realizando rollback.");
+                    await unitOfWork.RollbackAsync(cancellationToken);
+                    return ex;
                 }
-
-                logger.LogInformation("Aluno criado com sucesso. Id: {id}", createResult.Success);
-
-                return Unit.Sucessful;
-            }
-
-            private Result<Exception, Student> MapFrom(StudentCreateCommand src, ref Student dest)
-            {
-                if (src == null)
-                    return new Exception();
-
-                var destReturn = new Student
-                {
-                    Age = src.Age,
-                    CellPhone = src.CellPhone,
-                    Email = src.Email,
-                    Name = src.Name,
-                    Status = StatusEnum.Active,
-                };
-
-                return destReturn;
             }
         }
     }

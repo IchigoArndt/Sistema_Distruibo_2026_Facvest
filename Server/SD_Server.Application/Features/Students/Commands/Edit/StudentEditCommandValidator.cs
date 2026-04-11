@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SD_Server.Application.Helpers;
 
 namespace SD_Server.Application.Features.Students.Commands.Edit
 {
@@ -17,6 +18,11 @@ namespace SD_Server.Application.Features.Students.Commands.Edit
 
             RuleFor(x => x.CellPhone)
                 .Matches(@"^\d{10,11}$").WithMessage("O número de celular deve conter apenas dígitos e ter entre 10 e 11 caracteres.");
+
+            When(x => !string.IsNullOrEmpty(x.Password), () =>
+            {
+                RuleFor(x => x.Password).ApplyPasswordRules();
+            });
         }
     }
 }

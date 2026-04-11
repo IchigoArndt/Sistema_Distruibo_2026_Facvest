@@ -1,4 +1,4 @@
-using SD_Server.Domain.Interfaces;
+using SD_Server.Domain.Base;
 
 namespace SD_Server.Domain.Features.Professionals
 {
