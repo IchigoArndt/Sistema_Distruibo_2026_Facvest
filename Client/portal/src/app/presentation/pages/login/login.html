@@ -1,5 +1,7 @@
 <div class="login-page">
 
+  <p-toast></p-toast>
+
   <button class="theme-toggle-floating" (click)="themeService.toggle()"
     [title]="themeService.isDark() ? 'Ativar modo claro' : 'Ativar modo noturno'">
     <i [class]="themeService.isDark() ? 'pi pi-sun' : 'pi pi-moon'"></i>
