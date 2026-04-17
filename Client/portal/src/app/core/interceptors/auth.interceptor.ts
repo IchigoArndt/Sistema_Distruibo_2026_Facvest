@@ -1,14 +1,37 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+function isJwt(token: string | null): boolean {
+  if (!token) return false;
+  const parts = token.split('.');
+  return parts.length === 3;
+}
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
+  const router = inject(Router);
 
-  if (token) {
-    const authReq = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` }
-    });
-    return next(authReq);
+  // Não adicionar Authorization para requisições de login
+  if (req.url.includes('/Auth/Login')) {
+    return next(req);
   }
 
-  return next(req);
+  let authReq = req;
+  if (isJwt(token)) {
+    authReq = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  return next(authReq).pipe({
+    next: (event) => event,
+    error: (error) => {
+      if (error.status === 401) {
+        localStorage.clear();
+        router.navigate(['/login']);
+      }
+      throw error;
+    }
+  });
 };
