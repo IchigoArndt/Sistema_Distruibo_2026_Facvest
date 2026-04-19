@@ -4,9 +4,12 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+const TOKEN_KEY = 'token';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private _isAuthenticated = false;
+  private _token: string | null = null;
 
   constructor(
     private readonly http: HttpClient,
@@ -20,23 +23,39 @@ export class AuthService {
     return this.http.post<{ token: string }>(loginUrl, { email, password }).pipe(
       map(response => {
         this._isAuthenticated = true;
-        localStorage.setItem('token', response.token);
+        this._token = response.token;
+        this.setToken(response.token);
         return true;
       }),
       catchError(() => {
-        this._isAuthenticated = false;
+        this.clearAuthState();
         return of(false);
       })
     );
   }
 
   logout(): void {
-    this._isAuthenticated = false;
-    localStorage.removeItem('token');
+    this.clearAuthState();
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return this._isAuthenticated || !!localStorage.getItem('token');
+    return this._isAuthenticated || !!this._token || !!this.getToken();
+  }
+
+  private setToken(token: string): void {
+    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.removeItem(TOKEN_KEY);
+  }
+
+  private getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
+  }
+
+  private clearAuthState(): void {
+    this._isAuthenticated = false;
+    this._token = null;
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
   }
 }

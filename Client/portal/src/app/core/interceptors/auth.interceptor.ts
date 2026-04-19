@@ -1,6 +1,8 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 function isJwt(token: string | null): boolean {
   if (!token) return false;
@@ -24,14 +26,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  return next(authReq).pipe({
-    next: (event) => event,
-    error: (error) => {
+  return next(authReq).pipe(
+    catchError((error) => {
       if (error.status === 401) {
         localStorage.clear();
         router.navigate(['/login']);
       }
-      throw error;
-    }
-  });
+      return throwError(() => error);
+    })
+  );
 };
