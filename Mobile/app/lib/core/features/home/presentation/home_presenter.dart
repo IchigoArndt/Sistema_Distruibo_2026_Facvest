@@ -1,7 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_distribuido/core/features/home/domain/entities/Avaliation.dart';
+import 'package:sistema_distribuido/core/features/home/presentation/widgets/home_appbar.dart';
+import 'package:sistema_distribuido/core/features/home/presentation/widgets/home_welcome_card.dart';
+import 'package:sistema_distribuido/core/features/home/presentation/widgets/HomeMetricsRow.dart';
+import 'package:sistema_distribuido/core/features/home/presentation/widgets/HomeQuickActions.dart';
+import 'package:sistema_distribuido/core/features/home/presentation/widgets/HomeNextEvaluation.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  // Dados mock — futuramente virão de uma API
+  final Avaliation _proximaAvaliacao = Avaliation(
+    Professional: 'Dr. Carlos Mendes',
+    Data: DateTime(2026,04,25),
+    Type: 'Bioimpedância + Avaliação Postural',
+    Price: 150,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -9,91 +30,34 @@ class HomePage extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as String? ?? 'Usuário';
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A237E),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 60,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  'Bem-vindo!',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  username,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white70,
-                  ),
-                ),
-                const SizedBox(height: 48),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Text(
-                    'Você está autenticado no sistema.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 48),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/login',
-                        (route) => false,
-                      );
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Sair'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF1A237E),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: const HomeAppbar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomeWelcomeCard(username: username),
+            const SizedBox(height: 16),
+            const Homemetricsrow(Imc: 25.6,WeightPeople: 78.5),
+            const SizedBox(height: 24),
+            const HomeQuickActions(),
+            const SizedBox(height: 24),
+            HomeNextEvaluation(avaliation: _proximaAvaliacao),
+            const SizedBox(height: 24),
+          ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFFD32F2F),
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Profissionais'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Avaliações'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        ],
       ),
     );
   }
