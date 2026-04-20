@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD_Server.Infra.Data.Context;
 
@@ -11,9 +12,11 @@ using SD_Server.Infra.Data.Context;
 namespace SD_Server.Infra.Data.Migrations
 {
     [DbContext(typeof(SdServerDbContext))]
-    partial class SdServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260419000000_AddProfessionalsTable")]
+    partial class AddProfessionalsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
