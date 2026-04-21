@@ -1,0 +1,89 @@
+import { useState } from "react";
+import { Link } from "react-router";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Input } from "./ui/input";
+import { mockProfessionals } from "../data/mockData";
+import { Search, Star, Phone, Mail, ChevronRight } from "lucide-react";
+
+export function Professionals() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredProfessionals = mockProfessionals.filter(
+    (prof) =>
+      prof.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prof.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prof.methodology.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-gray-900 text-2xl mb-2">Profissionais</h2>
+        <p className="text-gray-600">Encontre o especialista ideal para você</p>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <Input
+          type="text"
+          placeholder="Buscar por nome, especialidade..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10 bg-white border-gray-300"
+        />
+      </div>
+
+      {/* Professionals List */}
+      <div className="space-y-4">
+        {filteredProfessionals.map((professional) => (
+          <Link key={professional.id} to={`/professional/${professional.id}`}>
+            <Card className="p-5 hover:shadow-lg transition-all cursor-pointer border-red-100 hover:border-red-300">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h3 className="text-gray-900 mb-1">{professional.name}</h3>
+                  <p className="text-gray-600 text-sm">{professional.specialty}</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
+              </div>
+
+              <div className="flex items-center space-x-1 mb-3">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-gray-900 text-sm">{professional.rating}</span>
+                <span className="text-gray-500 text-sm">({professional.reviews} avaliações)</span>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                  <Phone className="h-4 w-4 text-red-600" />
+                  <span>{professional.phone}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                  <Mail className="h-4 w-4 text-red-600" />
+                  <span>{professional.email}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                <Badge variant="secondary" className="bg-red-100 text-red-700">
+                  {professional.methodology}
+                </Badge>
+                <div className="bg-red-600 text-white px-4 py-1 rounded-full">
+                  R$ {professional.price}
+                </div>
+              </div>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      {filteredProfessionals.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">Nenhum profissional encontrado</p>
+        </div>
+      )}
+    </div>
+  );
+}

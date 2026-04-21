@@ -48,7 +48,21 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.pushNamed(context, '/profissionais');
+            return;
+          }
+          if (index == 2) {
+            Navigator.pushNamed(context, '/avaliacoes');
+            return;
+          }
+          if (index == 3) {
+            Navigator.pushNamed(context, '/perfil');
+            return;
+          }
+          setState(() => _currentIndex = index);
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFFD32F2F),
         unselectedItemColor: Colors.grey,

@@ -26,11 +26,9 @@ class _loginPage extends State<LoginPage> {
 
     if (!mounted) return;
 
-    final snackbar = authentication
-        ? StyleSnackBar.snackBarSucess
-        : StyleSnackBar.snackBarError;
-
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    if (!authentication) {
+      ScaffoldMessenger.of(context).showSnackBar(StyleSnackBar.snackBarError);
+    }
 
     if (authentication) {
       Navigator.pushNamedAndRemoveUntil(
@@ -96,8 +94,8 @@ class _loginPage extends State<LoginPage> {
     return Column(
       children: [
         Container(
-          width: 80,
-          height: 80,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -109,10 +107,14 @@ class _loginPage extends State<LoginPage> {
               ),
             ],
           ),
-          child: const Icon(
-            Icons.fitness_center,
-            size: 44,
-            color: Color(0xFFD32F2F),
+          child: ClipOval(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+                'assets/images/logo-anfis.png',
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 16),
