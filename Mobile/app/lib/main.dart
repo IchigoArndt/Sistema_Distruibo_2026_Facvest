@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_distribuido/core/features/login/presentation/login_presenter.dart';
 import 'package:sistema_distribuido/core/features/home/presentation/home_presenter.dart';
+import 'package:sistema_distribuido/core/features/perfil/presentation/perfil_presenter.dart';
+import 'package:sistema_distribuido/core/features/profissionais/presentation/profissionais_presenter.dart';
+import 'package:sistema_distribuido/core/features/avaliacoes/presentation/avaliacoes_presenter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +23,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
+        '/perfil': (context) => const PerfilPage(),
+        '/profissionais': (context) => const ProfissionaisPage(),
+        '/avaliacoes': (context) => const AvaliacoesPage(),
       },
     );
   }

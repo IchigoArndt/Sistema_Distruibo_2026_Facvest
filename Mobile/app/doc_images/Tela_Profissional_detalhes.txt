@@ -1,0 +1,181 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import { Card } from "./ui/card";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
+import { mockProfessionals } from "../data/mockData";
+import { Star, Phone, Mail, Award, Clock, CheckCircle2, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+
+export function ProfessionalDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const professional = mockProfessionals.find((p) => p.id === id);
+
+  if (!professional) {
+    return (
+      <div className="p-6">
+        <p className="text-gray-600">Profissional não encontrado</p>
+      </div>
+    );
+  }
+
+  const handleRequestAssessment = () => {
+    setShowConfirmDialog(false);
+    toast.success("Solicitação enviada com sucesso!", {
+      description: "Você receberá a confirmação em breve."
+    });
+    setTimeout(() => navigate("/assessments"), 1500);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center space-x-2 text-white mb-4 hover:text-red-100"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>Voltar</span>
+        </button>
+        <h1 className="text-2xl mb-2">{professional.name}</h1>
+        <p className="text-red-100">{professional.specialty}</p>
+      </div>
+
+      <div className="p-6 space-y-6">
+        {/* Rating */}
+        <Card className="p-5 border-red-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+              <span className="text-2xl text-gray-900">{professional.rating}</span>
+            </div>
+            <div className="text-right">
+              <p className="text-gray-600 text-sm">{professional.reviews} avaliações</p>
+              <p className="text-gray-600 text-sm">{professional.experience}</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Contact Info */}
+        <Card className="p-5 space-y-3 border-red-100">
+          <h3 className="text-gray-900 mb-3">Contato</h3>
+          <div className="flex items-center space-x-3">
+            <div className="bg-red-100 p-2 rounded-lg">
+              <Phone className="h-5 w-5 text-red-600" />
+            </div>
+            <div>
+              <p className="text-gray-600 text-sm">Telefone</p>
+              <p className="text-gray-900">{professional.phone}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="bg-red-100 p-2 rounded-lg">
+              <Mail className="h-5 w-5 text-red-600" />
+            </div>
+            <div>
+              <p className="text-gray-600 text-sm">Email</p>
+              <p className="text-gray-900">{professional.email}</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Methodology */}
+        <Card className="p-5 border-red-100">
+          <div className="flex items-center space-x-2 mb-3">
+            <Clock className="h-5 w-5 text-red-600" />
+            <h3 className="text-gray-900">Metodologia</h3>
+          </div>
+          <Badge variant="secondary" className="bg-red-100 text-red-700">
+            {professional.methodology}
+          </Badge>
+        </Card>
+
+        {/* About */}
+        <Card className="p-5 border-red-100">
+          <h3 className="text-gray-900 mb-3">Sobre</h3>
+          <p className="text-gray-700 leading-relaxed">{professional.about}</p>
+        </Card>
+
+        {/* Certifications */}
+        <Card className="p-5 border-red-100">
+          <div className="flex items-center space-x-2 mb-4">
+            <Award className="h-5 w-5 text-red-600" />
+            <h3 className="text-gray-900">Certificações</h3>
+          </div>
+          <div className="space-y-2">
+            {professional.certifications.map((cert, index) => (
+              <div key={index} className="flex items-start space-x-2">
+                <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-gray-700">{cert}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Price and Action */}
+        <Card className="p-6 bg-gradient-to-r from-red-50 to-red-100 border-red-200">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-gray-700 text-sm mb-1">Valor da avaliação</p>
+              <p className="text-3xl text-red-600">R$ {professional.price}</p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowConfirmDialog(true)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-6"
+          >
+            Solicitar Avaliação
+          </Button>
+        </Card>
+      </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent className="max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Confirmar Solicitação</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-gray-700">
+              Deseja solicitar uma avaliação com <strong>{professional.name}</strong>?
+            </p>
+            <div className="bg-red-50 p-4 rounded-lg space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-700">Profissional:</span>
+                <span className="text-gray-900">{professional.name}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-700">Metodologia:</span>
+                <span className="text-gray-900">{professional.methodology}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Valor:</span>
+                <span className="text-red-600">R$ {professional.price}</span>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmDialog(false)}
+              className="flex-1"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleRequestAssessment}
+              className="flex-1 bg-red-600 hover:bg-red-700"
+            >
+              Confirmar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

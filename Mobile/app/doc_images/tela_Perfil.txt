@@ -1,0 +1,208 @@
+import { useState } from "react";
+import { Card } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { mockHealthProfile } from "../data/mockData";
+import { User, Heart, Pill, Target, Edit2, Save } from "lucide-react";
+
+export function Profile() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [profile, setProfile] = useState(mockHealthProfile);
+
+  const handleSave = () => {
+    setIsEditing(false);
+    // Aqui salvaria os dados
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-gray-900 text-2xl">Meu Perfil</h2>
+        <Button
+          variant={isEditing ? "default" : "outline"}
+          size="sm"
+          onClick={isEditing ? handleSave : () => setIsEditing(true)}
+          className={isEditing ? "bg-red-600 hover:bg-red-700" : "border-red-600 text-red-600 hover:bg-red-50"}
+        >
+          {isEditing ? (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Salvar
+            </>
+          ) : (
+            <>
+              <Edit2 className="h-4 w-4 mr-2" />
+              Editar
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Personal Info */}
+      <Card className="p-6 space-y-4 border-red-100">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-red-100 p-2 rounded-lg">
+            <User className="h-5 w-5 text-red-600" />
+          </div>
+          <h3 className="text-gray-900">Informações Pessoais</h3>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="name" className="text-gray-700">Nome Completo</Label>
+            <Input
+              id="name"
+              value={profile.name}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+              disabled={!isEditing}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="age" className="text-gray-700">Idade</Label>
+              <Input
+                id="age"
+                type="number"
+                value={profile.age}
+                onChange={(e) => setProfile({ ...profile, age: parseInt(e.target.value) })}
+                disabled={!isEditing}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="gender" className="text-gray-700">Gênero</Label>
+              <Input
+                id="gender"
+                value={profile.gender}
+                onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
+                disabled={!isEditing}
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="weight" className="text-gray-700">Peso (kg)</Label>
+              <Input
+                id="weight"
+                type="number"
+                step="0.1"
+                value={profile.weight}
+                onChange={(e) => setProfile({ ...profile, weight: parseFloat(e.target.value) })}
+                disabled={!isEditing}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="height" className="text-gray-700">Altura (cm)</Label>
+              <Input
+                id="height"
+                type="number"
+                value={profile.height}
+                onChange={(e) => setProfile({ ...profile, height: parseInt(e.target.value) })}
+                disabled={!isEditing}
+                className="mt-1"
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Medical Conditions */}
+      <Card className="p-6 space-y-4 border-red-100">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-red-100 p-2 rounded-lg">
+            <Heart className="h-5 w-5 text-red-600" />
+          </div>
+          <h3 className="text-gray-900">Condições Médicas</h3>
+        </div>
+
+        {!isEditing ? (
+          <div className="space-y-2">
+            {profile.medicalConditions.map((condition, index) => (
+              <div key={index} className="bg-red-50 p-3 rounded-lg text-gray-700">
+                {condition}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Textarea
+            value={profile.medicalConditions.join('\n')}
+            onChange={(e) => setProfile({ 
+              ...profile, 
+              medicalConditions: e.target.value.split('\n').filter(c => c.trim()) 
+            })}
+            placeholder="Uma condição por linha"
+            className="min-h-20"
+          />
+        )}
+      </Card>
+
+      {/* Medications */}
+      <Card className="p-6 space-y-4 border-red-100">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-red-100 p-2 rounded-lg">
+            <Pill className="h-5 w-5 text-red-600" />
+          </div>
+          <h3 className="text-gray-900">Medicamentos</h3>
+        </div>
+
+        {!isEditing ? (
+          <div className="space-y-2">
+            {profile.medications.map((medication, index) => (
+              <div key={index} className="bg-red-50 p-3 rounded-lg text-gray-700">
+                {medication}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Textarea
+            value={profile.medications.join('\n')}
+            onChange={(e) => setProfile({ 
+              ...profile, 
+              medications: e.target.value.split('\n').filter(m => m.trim()) 
+            })}
+            placeholder="Um medicamento por linha"
+            className="min-h-20"
+          />
+        )}
+      </Card>
+
+      {/* Goals */}
+      <Card className="p-6 space-y-4 border-red-100">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-red-100 p-2 rounded-lg">
+            <Target className="h-5 w-5 text-red-600" />
+          </div>
+          <h3 className="text-gray-900">Objetivos</h3>
+        </div>
+
+        {!isEditing ? (
+          <div className="space-y-2">
+            {profile.goals.map((goal, index) => (
+              <div key={index} className="bg-red-50 p-3 rounded-lg text-gray-700">
+                • {goal}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Textarea
+            value={profile.goals.join('\n')}
+            onChange={(e) => setProfile({ 
+              ...profile, 
+              goals: e.target.value.split('\n').filter(g => g.trim()) 
+            })}
+            placeholder="Um objetivo por linha"
+            className="min-h-24"
+          />
+        )}
+      </Card>
+    </div>
+  );
+}
