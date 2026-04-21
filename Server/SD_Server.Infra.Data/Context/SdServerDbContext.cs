@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SD_Server.Domain.Features.Students;
 using SD_Server.Domain.Features.Users;
+using SD_Server.Domain.Features.Professionals;
 
 namespace SD_Server.Infra.Data.Context
 {
@@ -20,6 +21,8 @@ namespace SD_Server.Infra.Data.Context
         public DbSet<Student> Students { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Professional> Professionals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
