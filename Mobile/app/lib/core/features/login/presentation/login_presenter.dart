@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:sistema_distribuido/core/errors/auth_exceptions.dart';
+import 'package:sistema_distribuido/core/features/login/domain/entities/UserAuthentication.dart';
+import 'package:sistema_distribuido/core/features/login/domain/services/IUserAuthenticationSerivce.dart';
 import 'package:sistema_distribuido/core/features/login/presentation/styles/login_input_styles.dart';
 import 'package:sistema_distribuido/core/features/login/presentation/styles/login_snackbar_styles.dart';
-import 'package:sistema_distribuido/core/features/login/domain/entities/UserAuthentication.dart';
+import 'package:sistema_distribuido/core/shared/di/service_locator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,35 +16,61 @@ class LoginPage extends StatefulWidget {
 class _loginPage extends State<LoginPage> {
   String username = "";
   String password = "";
+  bool _isLoading = false;
+
+  final IAuthenticationService _authService = sl<IAuthenticationService>();
 
   void authenticateUser() async {
-    UserAuthentication user = UserAuthentication(username: username, password: password);
-
-    bool authentication = false;
-
-    if (user.username == "admin" && user.password == "1234") {
-      authentication = true;
-    }
-
-    if (!mounted) return;
-
-    if (!authentication) {
+    if (username.trim().isEmpty || password.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(StyleSnackBar.snackBarError);
+      return;
     }
 
-    if (authentication) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/home',
-        (route) => false,
-        arguments: username,
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => _showingUserNotRegisteredDialog(),
-      );
+    setState(() => _isLoading = true);
+
+    try {
+      final user = UserAuthentication(username: username.trim(), password: password);
+      final success = await _authService.login(user);
+
+      if (!mounted) return;
+
+      if (success) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+          arguments: username,
+        );
+      }
+    } on InvalidCredentialsException catch (e) {
+      if (!mounted) return;
+      _showErrorSnackbar(e.message);
+    } on TimeoutException catch (e) {
+      if (!mounted) return;
+      _showErrorSnackbar(e.message);
+    } on NetworkException catch (e) {
+      if (!mounted) return;
+      _showErrorSnackbar(e.message);
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      _showErrorSnackbar(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showErrorSnackbar('Ocorreu um erro inesperado. Tente novamente.');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: const Color(0xFFD32F2F),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
   }
 
   @override
@@ -191,6 +219,7 @@ class _loginPage extends State<LoginPage> {
             TextField(
               onChanged: (value) => setState(() => username = value),
               keyboardType: TextInputType.emailAddress,
+              enabled: !_isLoading,
               decoration: StyleInputs.getStyle("seu@email.com"),
             ),
             const SizedBox(height: 16),
@@ -207,31 +236,42 @@ class _loginPage extends State<LoginPage> {
               onChanged: (value) => setState(() => password = value),
               decoration: StyleInputs.getStyle("••••••••"),
               obscureText: true,
+              enabled: !_isLoading,
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: authenticateUser,
+                onPressed: _isLoading ? null : authenticateUser,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD32F2F),
                   foregroundColor: Colors.white,
+                  disabledBackgroundColor: const Color(0xFFD32F2F).withOpacity(0.6),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   elevation: 2,
                 ),
-                child: const Text(
-                  "Entrar",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        "Entrar",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () {},
+                onPressed: _isLoading ? null : () {},
                 child: const Text(
                   "Esqueceu sua senha?",
                   style: TextStyle(
@@ -269,20 +309,6 @@ class _loginPage extends State<LoginPage> {
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  AlertDialog _showingUserNotRegisteredDialog() {
-    return AlertDialog(
-      title: const Text("Hmmm, parece que esse usuário não está cadastrado"),
-      content: const Text(
-          "Precisamos de uma ajudinha extra para resolver isso\n Fale com o administrador do sistema."),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text("Ok"),
-        )
       ],
     );
   }

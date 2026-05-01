@@ -4,8 +4,11 @@ import 'package:sistema_distribuido/core/features/home/presentation/home_present
 import 'package:sistema_distribuido/core/features/perfil/presentation/perfil_presenter.dart';
 import 'package:sistema_distribuido/core/features/profissionais/presentation/profissionais_presenter.dart';
 import 'package:sistema_distribuido/core/features/avaliacoes/presentation/avaliacoes_presenter.dart';
+import 'package:sistema_distribuido/core/shared/di/service_locator.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   runApp(const MyApp());
 }
 
