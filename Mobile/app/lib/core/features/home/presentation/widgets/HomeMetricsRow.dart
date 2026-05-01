@@ -12,9 +12,9 @@ class Homemetricsrow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Expanded(child: _MetricCard(label: 'Peso Atual', value: this.WeightPeople.toString(), icon: Icons.trending_up,)),
+          Expanded(child: _MetricCard(label: 'Peso Atual', value: WeightPeople.toString(), icon: Icons.trending_up,)),
           const SizedBox(width: 12),
-          Expanded(child: _MetricCard(label: 'IMC', value: this.Imc.toString(), icon: Icons.show_chart)),
+          Expanded(child: _MetricCard(label: 'IMC', value: Imc.toString(), icon: Icons.show_chart)),
         ],
       ),
     );
