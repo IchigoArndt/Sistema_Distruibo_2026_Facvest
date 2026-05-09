@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace SD_Server.Infra.Data.Context
 {
@@ -23,27 +24,38 @@ namespace SD_Server.Infra.Data.Context
             return new SdServerDbContext(optionsBuilder.Options);
         }
 
-        private static string ResolveConnectionString()
+        private static string ResolveConnectionString([System.Runtime.CompilerServices.CallerFilePath] string callerFile = "")
         {
             var env = Environment.GetEnvironmentVariable("Connection_Sql");
             if (!string.IsNullOrWhiteSpace(env))
                 return env;
 
-            for (var dir = new DirectoryInfo(Directory.GetCurrentDirectory()); dir != null; dir = dir.Parent)
+            // Diretórios candidatos: working-dir, base do assembly (bin/...) e diretório do arquivo-fonte desta factory
+            var candidateRoots = new[]
             {
-                var appsettingsPath = Path.Combine(dir.FullName, "appsettings.json");
-                if (!File.Exists(appsettingsPath))
-                    continue;
+                Directory.GetCurrentDirectory(),
+                AppContext.BaseDirectory,
+                Path.GetDirectoryName(callerFile) ?? ""
+            };
 
-                var config = new ConfigurationBuilder()
-                    .SetBasePath(dir.FullName)
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .AddJsonFile("appsettings.Development.json", optional: true)
-                    .Build();
+            foreach (var root in candidateRoots.Where(r => !string.IsNullOrEmpty(r)))
+            {
+                for (var dir = new DirectoryInfo(root); dir != null; dir = dir.Parent)
+                {
+                    var appsettingsPath = Path.Combine(dir.FullName, "appsettings.json");
+                    if (!File.Exists(appsettingsPath))
+                        continue;
 
-                var cs = config["AppSettings:ConnectionString"] ?? config.GetConnectionString("SqlServer");
-                if (!string.IsNullOrWhiteSpace(cs))
-                    return cs;
+                    var config = new ConfigurationBuilder()
+                        .SetBasePath(dir.FullName)
+                        .AddJsonFile("appsettings.json", optional: false)
+                        .AddJsonFile("appsettings.Development.json", optional: true)
+                        .Build();
+
+                    var cs = config["AppSettings:ConnectionString"] ?? config.GetConnectionString("SqlServer");
+                    if (!string.IsNullOrWhiteSpace(cs))
+                        return cs;
+                }
             }
 
             throw new InvalidOperationException(

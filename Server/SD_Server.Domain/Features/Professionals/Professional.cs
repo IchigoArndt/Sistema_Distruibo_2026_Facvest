@@ -7,7 +7,7 @@ namespace SD_Server.Domain.Features.Professionals
     {
         public string Name { get; set; } 
         public string Email { get; set; } 
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         public string Cref { get; set; } 
         public string? Bio { get; set; } 
         public string PasswordHash { get; set; } 

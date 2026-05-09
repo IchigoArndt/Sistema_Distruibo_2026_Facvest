@@ -18,7 +18,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<boolean> {
     // TODO: substituir pela URL real da API de auth
-    const loginUrl = 'http://localhost:5000/auth/login'; // Ajustar conforme necessário
+    const loginUrl = 'https://localhost:7289/auth/login'; // Ajustar conforme necessário
 
     return this.http.post<{ token: string }>(loginUrl, { email, password }).pipe(
       map(response => {
