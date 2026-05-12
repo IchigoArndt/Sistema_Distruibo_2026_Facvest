@@ -1,0 +1,26 @@
+using AutoMapper;
+using MediatR;
+using SD_Server.Application.Features.Professionals.DTO;
+using SD_Server.Application.Features.Professionals.Queries;
+using SD_Server.Domain.Features.Professionals;
+using SD_SharedKernel.Helpers;
+
+namespace SD_Server.Application.Features.Professionals.Handlers
+{
+    public class GetProfessionalByIdQueryHandler(
+        IProfessionalRepository professionalRepository,
+        IMapper mapper) : IRequestHandler<GetProfessionalByIdQuery, Result<Exception, ProfessionalDTO>>
+    {
+        public async Task<Result<Exception, ProfessionalDTO>> Handle(GetProfessionalByIdQuery request, CancellationToken cancellationToken)
+        {
+            var result = await professionalRepository.GetByIdAsync(request.Id);
+
+            if (result.IsFailure)
+                return result.Failure;
+
+            var professional = result.Success;
+            var dto = mapper.Map<ProfessionalDTO>(professional);
+            return dto;
+        }
+    }
+}
