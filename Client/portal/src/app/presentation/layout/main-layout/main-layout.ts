@@ -32,11 +32,12 @@ export class MainLayoutComponent {
     { label: 'Dashboard',  icon: 'pi pi-home',      route: '/dashboard'  },
     { label: 'Alunos',     icon: 'pi pi-users',     route: '/alunos'     },
     { label: 'Avaliações', icon: 'pi pi-clipboard', route: '/avaliacoes' },
+    { label: 'Profissionais', icon: 'pi pi-id-card', route: '/profissionais' },
     { label: 'Meu Perfil', icon: 'pi pi-user',      route: '/perfil'     },
   ];
 
   constructor(
-    private readonly authService: AuthService,
+    public readonly authService: AuthService,
     readonly themeService: ThemeService
   ) {}
 

@@ -58,4 +58,21 @@ export class AuthService {
     localStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
   }
+
+  getRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const payload = JSON.parse(atob(parts[1]));
+      const roles = payload.role ?? payload.roles ?? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      if (!roles) return null;
+      if (Array.isArray(roles)) return roles[0];
+      return roles;
+    } catch {
+      return null;
+    }
+  }
 }

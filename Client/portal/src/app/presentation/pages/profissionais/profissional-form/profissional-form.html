@@ -1,0 +1,129 @@
+<p-toast />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Novo Profissional</h2>
+      <p>Preencha os dados para cadastrar um novo profissional</p>
+    </div>
+    <p-button
+      label="Cancelar"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      [text]="true"
+      (onClick)="onCancel()" />
+  </div>
+
+  <div class="card form-card">
+    <div class="avatar-preview">
+      <p-avatar [label]="getAvatar()" shape="circle" size="xlarge" />
+      <span class="avatar-label">Inicial do nome</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-grid">
+
+        <div class="form-field full-width">
+          <label for="nome" class="field-label">Nome completo <span class="required">*</span></label>
+          <input
+            id="nome"
+            pInputText
+            formControlName="nome"
+            placeholder="Ex: João da Silva"
+            [class.ng-invalid]="hasError('nome', 'required') || hasError('nome', 'minlength')" />
+          <small *ngIf="hasError('nome', 'required')" class="field-error">Nome é obrigatório.</small>
+          <small *ngIf="hasError('nome', 'minlength')" class="field-error">Nome deve ter ao menos 3 caracteres.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="cref" class="field-label">CREF <span class="required">*</span></label>
+          <input
+            id="cref"
+            pInputText
+            formControlName="cref"
+            placeholder="Ex: CREF 123456-G/SC"
+            [class.ng-invalid]="hasError('cref', 'required')" />
+          <small *ngIf="hasError('cref', 'required')" class="field-error">CREF é obrigatório.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="email" class="field-label">E-mail <span class="required">*</span></label>
+          <input
+            id="email"
+            pInputText
+            type="email"
+            formControlName="email"
+            placeholder="Ex: profissional@email.com"
+            [class.ng-invalid]="hasError('email', 'required') || hasError('email', 'email')" />
+          <small *ngIf="hasError('email', 'required')" class="field-error">E-mail é obrigatório.</small>
+          <small *ngIf="hasError('email', 'email')" class="field-error">Informe um e-mail válido.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="telefone" class="field-label">Telefone <span class="required">*</span></label>
+          <input
+            id="telefone"
+            pInputText
+            formControlName="telefone"
+            placeholder="(47) 99999-0000"
+            (input)="formatTelefone($event)"
+            [class.ng-invalid]="hasError('telefone', 'required') || hasError('telefone', 'pattern')" />
+          <small *ngIf="hasError('telefone', 'required')" class="field-error">Telefone é obrigatório.</small>
+          <small *ngIf="hasError('telefone', 'pattern')" class="field-error">Formato: (XX) XXXXX-XXXX</small>
+        </div>
+
+        <div class="form-field full-width">
+          <label for="bio" class="field-label">Biografia / Especialidades</label>
+          <textarea
+            id="bio"
+            pTextarea
+            formControlName="bio"
+            rows="4"
+            placeholder="Descreva brevemente as especialidades"></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="senha" class="field-label">Senha <span class="required">*</span></label>
+          <input
+            id="senha"
+            pInputText
+            type="password"
+            formControlName="senha"
+            [class.ng-invalid]="hasError('senha', 'required') || hasError('senha', 'minlength')" />
+          <small *ngIf="hasError('senha', 'required')" class="field-error">Senha é obrigatória.</small>
+          <small *ngIf="hasError('senha', 'minlength')" class="field-error">Senha deve ter ao menos 8 caracteres.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="confirmacaoSenha" class="field-label">Confirmação de senha <span class="required">*</span></label>
+          <input
+            id="confirmacaoSenha"
+            pInputText
+            type="password"
+            formControlName="confirmacaoSenha"
+            [class.ng-invalid]="hasError('confirmacaoSenha', 'required') || confirmacaoSenhaError" />
+          <small *ngIf="hasError('confirmacaoSenha', 'required')" class="field-error">Confirmação de senha é obrigatória.</small>
+          <small *ngIf="confirmacaoSenhaError" class="field-error">As senhas devem ser iguais.</small>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          label="Cancelar"
+          severity="secondary"
+          [text]="true"
+          type="button"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Salvar"
+          icon="pi pi-check"
+          type="submit"
+          [loading]="submitting"
+          [disabled]="submitting" />
+      </div>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,88 @@
+<p-toast />
+<p-confirmDialog />
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Profissionais</h2>
+      <p>Gerencie os profissionais cadastrados no sistema</p>
+    </div>
+    <p-button label="Novo Profissional" icon="pi pi-plus" routerLink="/profissionais/novo" />
+  </div>
+
+  <div class="card">
+    <div class="table-toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar profissional..." />
+      </p-iconfield>
+    </div>
+
+    <ng-container *ngIf="loading; else tableContent">
+      <div class="skeleton-grid">
+        <p-skeleton *ngFor="let row of skeletonRows" width="100%" height="3rem" />
+      </div>
+    </ng-container>
+
+    <ng-template #tableContent>
+      <p-table
+        [value]="filteredProfissionais"
+        [paginator]="true"
+        [rows]="10"
+        [tableStyle]="{ 'min-width': '100%' }"
+        styleClass="p-datatable-gridlines">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Avatar</th>
+            <th pSortableColumn="nome">Nome <p-sortIcon field="nome" /></th>
+            <th>CREF</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+            <th>Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-profissional>
+          <tr>
+            <td>
+              <div class="profissional-cell">
+                <p-avatar [label]="getAvatar(profissional.nome)" shape="circle" size="normal" />
+              </div>
+            </td>
+            <td>{{ profissional.nome }}</td>
+            <td>{{ profissional.cref }}</td>
+            <td>{{ profissional.email }}</td>
+            <td>{{ profissional.telefone }}</td>
+            <td><p-tag [value]="profissional.status" [severity]="getSeverity(profissional.status)" /></td>
+            <td>
+              <div class="actions">
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  [rounded]="true"
+                  pTooltip="Excluir"
+                  (onClick)="confirmDelete(profissional)" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="empty-msg">Nenhum profissional encontrado.</td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </ng-template>
+  </div>
+
+</div>

@@ -11,14 +11,16 @@
 
     <nav class="sidebar-nav">
       @for (item of navItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          class="nav-item"
-          pRipple>
-          <i [class]="item.icon"></i>
-          <span class="nav-label">{{ item.label }}</span>
-        </a>
+        @if (item.route !== '/profissionais' || authService.getRole() === 'Admin') {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="nav-item"
+            pRipple>
+            <i [class]="item.icon"></i>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+        }
       }
     </nav>
 

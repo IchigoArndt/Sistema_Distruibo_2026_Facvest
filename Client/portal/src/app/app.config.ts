@@ -10,6 +10,8 @@ import { AlunoRepository } from './domain/repositories/aluno.repository';
 import { AlunoRepositoryImpl } from './data/repositories/aluno.repository.impl';
 import { AvaliacaoRepository } from './domain/repositories/avaliacao.repository';
 import { AvaliacaoRepositoryImpl } from './data/repositories/avaliacao.repository.impl';
+import { ProfissionalRepository } from './domain/repositories/profissional.repository';
+import { ProfissionalRepositoryImpl } from './data/repositories/profissional.repository.impl';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
@@ -26,7 +28,8 @@ export const appConfig: ApplicationConfig = {
         options: { darkModeSelector: '.dark-mode' }
       }
     }),
-    { provide: AlunoRepository,     useClass: AlunoRepositoryImpl     },
-    { provide: AvaliacaoRepository, useClass: AvaliacaoRepositoryImpl },
+    { provide: AlunoRepository,       useClass: AlunoRepositoryImpl },
+    { provide: AvaliacaoRepository,   useClass: AvaliacaoRepositoryImpl },
+    { provide: ProfissionalRepository, useClass: ProfissionalRepositoryImpl },
   ]
 };

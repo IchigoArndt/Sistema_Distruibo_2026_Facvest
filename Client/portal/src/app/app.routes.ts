@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './presentation/pages/login/login';
 import { MainLayoutComponent } from './presentation/layout/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +19,16 @@ export const routes: Routes = [
       {
         path: 'alunos',
         loadComponent: () => import('./presentation/pages/alunos/alunos').then(m => m.AlunosComponent)
+      },
+      {
+        path: 'profissionais',
+        loadComponent: () => import('./presentation/pages/profissionais/profissionais').then(m => m.ProfissionaisComponent),
+        canActivate: [authGuard, adminGuard]
+      },
+      {
+        path: 'profissionais/novo',
+        loadComponent: () => import('./presentation/pages/profissionais/profissional-form/profissional-form').then(m => m.ProfissionalFormComponent),
+        canActivate: [authGuard, adminGuard]
       },
       {
         path: 'alunos/novo',

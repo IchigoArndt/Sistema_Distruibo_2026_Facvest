@@ -5,4 +5,6 @@ export interface Profissional {
   telefone: string;
   cref: string;
   bio?: string;
+  status?: 'Ativo' | 'Inativo';
+  senha?: string;
 }
