@@ -30,32 +30,20 @@ jobs:
       run: cd Mobile/app && flutter build apk --release
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-release.apk
         path: Mobile/app/build/app/outputs/flutter-apk/app-release.apk
 
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ github.run_number }}
-        release_name: Release v${{ github.run_number }}
+        name: Release v${{ github.run_number }}
         body: |
           ## Build #${{ github.run_number }}
           APK gerado automaticamente pelo GitHub Actions
         draft: false
         prerelease: false
-      if: github.event_name == 'push' && github.ref == 'refs/heads/lfc/apresentacao'
-
-    - name: Upload APK to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Mobile/app/build/app/outputs/flutter-apk/app-release.apk
-        asset_name: app-release.apk
-        asset_content_type: application/vnd.android.package-archive
+        files: Mobile/app/build/app/outputs/flutter-apk/app-release.apk
       if: github.event_name == 'push' && github.ref == 'refs/heads/lfc/apresentacao'
