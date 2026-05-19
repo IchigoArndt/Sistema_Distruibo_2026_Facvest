@@ -1,0 +1,64 @@
+name: Build APK - AnFis
+
+# Quando executar:
+# - A cada push na branch main (ou master)
+# - Manualmente pela aba Actions do GitHub
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'Mobile/app/**'        # só dispara se houver mudança no app Flutter
+  workflow_dispatch:           # permite rodar manualmente a qualquer momento
+
+jobs:
+  build-apk:
+    name: Compilar APK Android
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código do repositório
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      # 2. Configura o Java (necessário para compilar Android)
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Instala o Flutter SDK na versão compatível com o projeto (Dart ^3.10.3)
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true          # armazena o SDK em cache para builds futuras serem mais rápidas
+
+      # 4. Exibe as versões instaladas (útil para debug)
+      - name: Verificar versões
+        run: |
+          flutter --version
+          dart --version
+        working-directory: Mobile/app
+
+      # 5. Baixa as dependências do projeto
+      - name: Instalar dependências (flutter pub get)
+        run: flutter pub get
+        working-directory: Mobile/app
+
+      # 6. Compila o APK
+      #    --release  → código otimizado
+      #    O APK será assinado com a chave de debug padrão (instalável em qualquer Android)
+      - name: Compilar APK
+        run: flutter build apk --release
+        working-directory: Mobile/app
+
+      # 7. Salva o APK como artefato para download
+      - name: Salvar APK como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: anfis-app-release
+          path: Mobile/app/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30   # fica disponível por 30 dias
