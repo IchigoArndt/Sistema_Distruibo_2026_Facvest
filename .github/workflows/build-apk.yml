@@ -5,11 +5,10 @@ name: Build APK - AnFis
 # - Manualmente pela aba Actions do GitHub
 on:
   push:
-    branches:
-      - lfc/apresentacao
-    paths:
-      - 'Mobile/app/**'        # só dispara se houver mudança no app Flutter
-  workflow_dispatch:           # permite rodar manualmente a qualquer momento
+    branches: [ lfc/apresentacao ]
+  pull_request:
+    branches: [ lfc/apresentacao ]
+  workflow_dispatch:        # permite rodar manualmente a qualquer momento
 
 jobs:
   build-apk:
