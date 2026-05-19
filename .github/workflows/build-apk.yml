@@ -6,8 +6,7 @@ name: Build APK - AnFis
 on:
   push:
     branches:
-      - main
-      - master
+      - lfc/apresentacao
     paths:
       - 'Mobile/app/**'        # só dispara se houver mudança no app Flutter
   workflow_dispatch:           # permite rodar manualmente a qualquer momento
