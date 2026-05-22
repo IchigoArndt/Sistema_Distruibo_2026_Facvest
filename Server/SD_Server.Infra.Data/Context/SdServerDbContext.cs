@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SD_Server.Domain.Features.Students;
 using SD_Server.Domain.Features.Users;
 using SD_Server.Domain.Features.Professionals;
+using SD_Server.Domain.Features.Assessments;
 
 namespace SD_Server.Infra.Data.Context
 {
@@ -23,6 +24,8 @@ namespace SD_Server.Infra.Data.Context
         public DbSet<User> Users { get; set; }
 
         public DbSet<Professional> Professionals { get; set; }
+
+        public DbSet<Assessment> Assessments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

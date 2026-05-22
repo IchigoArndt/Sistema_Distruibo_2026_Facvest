@@ -144,6 +144,49 @@ namespace SD_Server.Infra.Data.Migrations
 
                     b.ToTable("tb_Professionals", (string)null);
                 });
+
+            modelBuilder.Entity("SD_Server.Domain.Features.Assessments.Assessment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProfessionalId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Methodology")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Results")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("ProfessionalId");
+
+                    b.ToTable("tb_Assessments", (string)null);
+                });
 #pragma warning restore 612, 618
         }
     }
