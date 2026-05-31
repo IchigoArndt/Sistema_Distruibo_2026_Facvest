@@ -27,7 +27,7 @@ namespace SD_Server.Api.Controllers.Professional
         }
 
         [HttpGet("GetAll")]
-        [Authorize(Roles = "Admin,Professional")]
+        [Authorize(Roles = "Admin,Professional,Student")]
         public async Task<IActionResult> GetAll()
         {
             var command = new GetAllProfessionalsCommand();

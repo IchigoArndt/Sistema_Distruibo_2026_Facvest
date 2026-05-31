@@ -72,7 +72,8 @@ namespace SD_Server.Auth.Handlers
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.Role, GetRole(user.TypeAccess))
+                    new Claim(ClaimTypes.Role, GetRole(user.TypeAccess)),
+                    new Claim("entity_id", user.EntityId?.ToString() ?? string.Empty)
                 };
 
                 var tokenDescriptor = new SecurityTokenDescriptor

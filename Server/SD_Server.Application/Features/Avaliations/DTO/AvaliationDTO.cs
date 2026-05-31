@@ -8,6 +8,7 @@ namespace SD_Server.Application.Features.Avaliations.DTO
         public int Id { get; set; }
         public int StudentId { get; set; }
         public int ProfessionalId { get; set; }
+        public string? ProfessionalName { get; set; }
         public DateTime Date { get; set; }
         public TypeAvaliationEnum TypeAvaliation { get; set; }
         public StudentObjectiveEnum StudentObjective { get; set; }

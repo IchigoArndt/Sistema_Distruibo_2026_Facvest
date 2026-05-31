@@ -59,7 +59,19 @@ public class AvaliationRepository(SdServerDbContext context, ILogger<AvaliationR
         logger.LogInformation("Buscando todas as avaliações.");
         return Task.FromResult(
             Result<Exception, IQueryable<Avaliation>>.Of(
-                context.Avaliations.AsNoTracking().AsQueryable()));
+                context.Avaliations.Include(a => a.Professional).AsNoTracking().AsQueryable()));
+    }
+
+    public Task<Result<Exception, IQueryable<Avaliation>>> GetByStudentIdAsync(int studentId)
+    {
+        logger.LogInformation("Buscando avaliações do aluno Id: {StudentId}", studentId);
+        return Task.FromResult(
+            Result<Exception, IQueryable<Avaliation>>.Of(
+                context.Avaliations
+                    .Include(a => a.Professional)
+                    .Where(a => a.StudentId == studentId)
+                    .AsNoTracking()
+                    .AsQueryable()));
     }
 
     public async Task<Result<Exception, Avaliation>> GetByIdAsync(int id)

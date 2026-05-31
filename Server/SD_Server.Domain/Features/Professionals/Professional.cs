@@ -12,5 +12,9 @@ namespace SD_Server.Domain.Features.Professionals
         public string? Bio { get; set; } 
         public string PasswordHash { get; set; } 
         public StatusEnum Status { get; set; }
+        public string? Specialty { get; set; }
+        public string? Methodology { get; set; }
+        public decimal? Price { get; set; }
+        public string? Experience { get; set; }
     }
 }

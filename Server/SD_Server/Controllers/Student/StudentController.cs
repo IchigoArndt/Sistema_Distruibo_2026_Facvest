@@ -8,6 +8,7 @@ using SD_Server.Application.Features.Students.Commands.Delete;
 using SD_Server.Application.Features.Students.Commands.Detail;
 using SD_Server.Application.Features.Students.Commands.Edit;
 using SD_Server.Application.Features.Students.Handlers;
+using System.Security.Claims;
 
 namespace SD_Server.Api.Controllers.Student
 {
@@ -15,6 +16,19 @@ namespace SD_Server.Api.Controllers.Student
     [Route("[controller]")]
     public class StudentController(IMediator mediator, IMapper mapper) : ApiControllerBase(mapper)
     {
+        [HttpGet("GetMe")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetMe()
+        {
+            var entityIdClaim = User.FindFirstValue("entity_id");
+            if (!int.TryParse(entityIdClaim, out var studentId))
+                return BadRequest("Usuário inválido.");
+
+            var query = new StudentDetailCommand { Id = studentId };
+            var response = await mediator.Send(query);
+            return HandleCommand(response);
+        }
+
         [HttpPost("Create")]
         [Authorize(Roles = "Admin,Professional")]
         public async Task<IActionResult> Create(StudentCreateCommand request)

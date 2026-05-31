@@ -62,7 +62,11 @@ namespace SD_Server.Application.Features.Professionals.Handlers
                         Cref = request.Cref,
                         Bio = request.Bio,
                         PasswordHash = BC.HashPassword(request.Password),
-                        Status = StatusEnum.Active
+                        Status = StatusEnum.Active,
+                        Experience = !string.IsNullOrEmpty(request.Experience) ? request.Experience : string.Empty,
+                        Methodology = !string.IsNullOrEmpty(request.Methodology) ? request.Methodology : string.Empty,
+                        Price = request.Price ?? 0m,
+                        Specialty =  !string.IsNullOrEmpty(request.Specialty) ? request.Specialty : string.Empty
                     };
 
                     var createProfessionalResult = await repository.AddAsync(professional);

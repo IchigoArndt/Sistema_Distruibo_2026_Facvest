@@ -11,5 +11,13 @@ namespace SD_Server.Application.Features.Professionals.Commands.Create
         public string Cref { get; set; } = string.Empty;
         public string? Bio { get; set; }
         public string Password { get; set; } = string.Empty;
+        
+        public string? Specialty { get; set; }
+        
+        public string? Methodology { get; set; }
+        
+        public decimal? Price { get; set; }
+        
+        public string? Experience { get; set; }
     }
 }

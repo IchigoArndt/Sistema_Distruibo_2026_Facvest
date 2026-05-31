@@ -39,6 +39,18 @@ namespace SD_Server.Infra.Data.Features.Professionals
             builder.Property(x => x.Status)
                 .HasConversion<int>()
                 .IsRequired();
+
+            builder.Property(x => x.Specialty)
+                .HasColumnType("VARCHAR(100)");
+
+            builder.Property(x => x.Methodology)
+                .HasColumnType("VARCHAR(100)");
+
+            builder.Property(x => x.Price)
+                .HasColumnType("DECIMAL(10,2)");
+
+            builder.Property(x => x.Experience)
+                .HasColumnType("VARCHAR(200)");
         }
     }
 }

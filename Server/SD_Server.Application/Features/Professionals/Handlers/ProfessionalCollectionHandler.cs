@@ -13,13 +13,19 @@ namespace SD_Server.Application.Features.Professionals.Handlers
     {
         public async Task<Result<Exception, List<ProfessionalDTO>>> Handle(GetAllProfessionalsCommand request, CancellationToken cancellationToken)
         {
+            List<ProfessionalDTO> dtos = new List<ProfessionalDTO>();
+            
             var result = await professionalRepository.GetAllAsync();
 
             if (result.IsFailure)
                 return result.Failure;
 
-            var professionals = result.Success.ToList();
-            var dtos = mapper.Map<List<ProfessionalDTO>>(professionals);
+            if (result.Success != null)
+            {
+                var professionals = result.Success.ToList();
+                dtos = mapper.Map<List<ProfessionalDTO>>(professionals);
+            }
+            
             return dtos;
         }
     }

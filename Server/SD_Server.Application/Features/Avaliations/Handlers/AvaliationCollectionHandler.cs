@@ -39,6 +39,7 @@ namespace SD_Server.Application.Features.Avaliations.Handlers
                     Id                  = a.Id,
                     StudentId           = a.StudentId,
                     ProfessionalId      = a.ProfessionalId,
+                    ProfessionalName    = a.Professional != null ? a.Professional.Name : null,
                     Date                = a.Date,
                     TypeAvaliation      = a.TypeAvaliation,
                     StudentObjective    = a.StudentObjective,
