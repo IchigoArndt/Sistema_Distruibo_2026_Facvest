@@ -1,21 +1,17 @@
 class HealthProfile {
-  String name;
-  int age;
-  String gender;
-  double weight;
-  int height;
-  List<String> medicalConditions;
-  List<String> medications;
-  List<String> goals;
+  final int id;
+  final String name;
+  final String email;
+  final int age;
+  final String cellPhone;
+  final DateTime? lastReview;
 
   HealthProfile({
+    required this.id,
     required this.name,
+    required this.email,
     required this.age,
-    required this.gender,
-    required this.weight,
-    required this.height,
-    required this.medicalConditions,
-    required this.medications,
-    required this.goals,
+    required this.cellPhone,
+    this.lastReview,
   });
 }

@@ -3,5 +3,10 @@ import 'package:sistema_distribuido/core/features/profissionais/domain/entities/
 abstract class IProfissionaisService {
   Future<List<Professional>> getProfessionals();
   Future<Professional> getProfessionalById(int id);
-  Future<bool> requestAssessment(int professionalId);
+  Future<void> requestAssessment(
+    int professionalId, {
+    required DateTime date,
+    required int typeAvaliation,
+    required int studentObjective,
+  });
 }

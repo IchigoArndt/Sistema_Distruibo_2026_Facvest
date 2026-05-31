@@ -17,7 +17,7 @@ class HomeWelcomeCard extends StatelessWidget{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Olá', style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+          Text('Olá, $username!', style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           const Text('Bem vindo ao AnFis', style: TextStyle(color: Colors.white70, fontSize: 14)),
         ],

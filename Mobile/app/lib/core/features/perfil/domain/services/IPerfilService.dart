@@ -2,5 +2,4 @@ import 'package:sistema_distribuido/core/features/perfil/domain/entities/health_
 
 abstract class IPerfilService {
   Future<HealthProfile> getProfile();
-  Future<bool> updateProfile(HealthProfile profile);
 }

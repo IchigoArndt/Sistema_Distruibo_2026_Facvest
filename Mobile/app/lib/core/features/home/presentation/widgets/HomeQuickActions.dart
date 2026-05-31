@@ -13,13 +13,6 @@ class HomeQuickActions extends StatelessWidget {
           const Text('Ações Rápidas', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           _ActionCard(
-            icon: Icons.person_search,
-            title: 'Buscar Profissional',
-            subtitle: 'Encontre especialistas',
-            onTap: () => Navigator.pushNamed(context, '/profissionais'),
-          ),
-          const SizedBox(height: 10),
-          _ActionCard(
             icon: Icons.calendar_month,
             title: 'Minhas Avaliações',
             subtitle: 'Acompanhe seu progresso',

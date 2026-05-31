@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'auth_interceptor.dart';
 
 class ApiClient {
-  // 10.0.2.2 é o alias do emulador Android para a máquina host (localhost)
-  static const String _authBaseUrl = 'https://10.0.2.2:7289';
+  /// No emulador Android, 10.0.2.2 aponta para o localhost da máquina host.
+  static String get _devHost => Platform.isAndroid ? '10.0.2.2' : 'localhost';
+
+  static String get _authBaseUrl => 'https://$_devHost:7289';
   static const Duration _timeout = Duration(seconds: 15);
 
   static Dio createAuthDio() {
@@ -39,13 +41,20 @@ class ApiClient {
   static Dio createMainDio(AuthInterceptor authInterceptor) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'http://10.0.2.2:5252',
+        baseUrl: 'https://$_devHost:7171',
         connectTimeout: _timeout,
         receiveTimeout: _timeout,
         sendTimeout: _timeout,
         headers: {'Content-Type': 'application/json'},
       ),
     );
+
+    // Ignora certificado auto-assinado do ambiente de desenvolvimento
+    (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      final client = HttpClient();
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
+    };
 
     dio.interceptors.add(authInterceptor);
     dio.interceptors.add(LogInterceptor(

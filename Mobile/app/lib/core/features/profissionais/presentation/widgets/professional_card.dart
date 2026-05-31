@@ -43,11 +43,13 @@ class ProfessionalCard extends StatelessWidget {
                           color: Color(0xFF212121),
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        professional.specialty,
-                        style: const TextStyle(fontSize: 13, color: Colors.grey),
-                      ),
+                      if (professional.specialty != null && professional.specialty!.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          professional.specialty!,
+                          style: const TextStyle(fontSize: 13, color: Colors.grey),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -55,24 +57,10 @@ class ProfessionalCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.star, color: Color(0xFFFFC107), size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  professional.rating.toStringAsFixed(1),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF212121)),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '(${professional.reviews} avaliações)',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _ContactRow(icon: Icons.phone, text: professional.phone),
-            const SizedBox(height: 6),
+            if (professional.phone != null && professional.phone!.isNotEmpty)
+              _ContactRow(icon: Icons.phone, text: professional.phone!),
+            if (professional.phone != null && professional.phone!.isNotEmpty)
+              const SizedBox(height: 6),
             _ContactRow(icon: Icons.email, text: professional.email),
             const SizedBox(height: 12),
             const Divider(height: 1, color: Color(0xFFEEEEEE)),
@@ -80,36 +68,40 @@ class ProfessionalCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEBEE),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    professional.methodology,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFFD32F2F),
-                      fontWeight: FontWeight.w500,
+                if (professional.methodology != null && professional.methodology!.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFEBEE),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      professional.methodology!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFD32F2F),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox(),
+                if (professional.price != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD32F2F),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'R\$ ${professional.price!.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD32F2F),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'R\$ ${professional.price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
               ],
             ),
           ],
@@ -131,7 +123,13 @@ class _ContactRow extends StatelessWidget {
       children: [
         Icon(icon, size: 15, color: const Color(0xFFD32F2F)),
         const SizedBox(width: 8),
-        Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF616161))),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF616161)),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }

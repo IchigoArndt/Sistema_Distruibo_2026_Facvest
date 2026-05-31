@@ -30,18 +30,16 @@ class _loginPage extends State<LoginPage> {
 
     try {
       final user = UserAuthentication(username: username.trim(), password: password);
-      final success = await _authService.login(user);
+      final displayName = await _authService.login(user);
 
       if (!mounted) return;
 
-      if (success) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/home',
-          (route) => false,
-          arguments: username,
-        );
-      }
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/home',
+        (route) => false,
+        arguments: displayName,
+      );
     } on InvalidCredentialsException catch (e) {
       if (!mounted) return;
       _showErrorSnackbar(e.message);
