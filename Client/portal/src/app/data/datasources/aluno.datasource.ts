@@ -1,38 +1,36 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { AlunoModel } from '../models/aluno.model';
 import { environment } from '../../../environment';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AlunoDataSource {
 
-  private apiUrl = `${environment.apiUrl}/Student`;
+  private readonly apiUrl = `${environment.apiUrl}/Student`;
 
-  private mockData: AlunoModel[] = [
-    { id: 1, name: 'Ana Silva',    email: 'ana@email.com',    cellPhone: '47999990001', status: 1, lastReview: '15/03/2026', age: 25 },
-    { id: 2, name: 'Bruno Mendes', email: 'bruno@email.com',  cellPhone: '47999990002', status: 1, lastReview: '14/03/2026', age: 25 },
-    { id: 3, name: 'Carla Souza',  email: 'carla@email.com',  cellPhone: '47999990003', status: 2, lastReview: '12/03/2026', age: 25 },
-    { id: 4, name: 'Diego Lima',   email: 'diego@email.com',  cellPhone: '47999990004', status: 1, lastReview: '10/03/2026', age: 25 },
-    { id: 5, name: 'Eva Martins',  email: 'eva@email.com',    cellPhone: '47999990005', status: 1, lastReview: '08/03/2026', age: 25 },
-  ];
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService,
+  ) {}
 
   getAll(): Observable<AlunoModel[]> {
+    const role = this.authService.getRole();
+    if (role === 'Professional') {
+      return this.http.get<AlunoModel[]>(`${this.apiUrl}/GetAllStudentsByProfessionalId`);
+    }
     return this.http.get<AlunoModel[]>(`${this.apiUrl}/GetAll`);
   }
 
-  getById(id: number): Observable<AlunoModel | undefined> {
+  getById(id: number): Observable<AlunoModel> {
     return this.http.get<AlunoModel>(`${this.apiUrl}/GetById/${id}`);
   }
 
   create(aluno: Omit<AlunoModel, 'id'>): Observable<AlunoModel> {
-    const newAluno: AlunoModel = { ...aluno, id: this.mockData.length + 1 };
-    this.http.post<AlunoModel>(`${this.apiUrl}/Create`, aluno).subscribe(response => {
-      console.log(response);
-    });
-    return of(newAluno);
+    return this.http.post<void>(`${this.apiUrl}/Create`, aluno).pipe(
+      map(() => ({ ...aluno, id: 0 } as AlunoModel))
+    );
   }
 
   update(id: number, aluno: Partial<AlunoModel>): Observable<AlunoModel> {

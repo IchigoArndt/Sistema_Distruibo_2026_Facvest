@@ -111,6 +111,52 @@
               placeholder="Selecione o status" />
           </div>
 
+          @if (!isEditMode) {
+            <div class="form-field">
+              <label for="password" class="field-label">
+                Senha de acesso <span class="required">*</span>
+              </label>
+              <p-password
+                inputId="password"
+                formControlName="password"
+                placeholder="Mín. 6 caracteres"
+                [toggleMask]="true"
+                [feedback]="false"
+                styleClass="w-full"
+                [class.ng-invalid]="hasError('password', 'required') || hasError('password', 'minlength') || hasError('password', 'noUppercase') || hasError('password', 'noLowercase') || hasError('password', 'consecutiveDigits')" />
+              @if (hasError('password', 'required')) {
+                <small class="field-error">Senha é obrigatória.</small>
+              } @else if (hasError('password', 'minlength')) {
+                <small class="field-error">A senha deve ter no mínimo 6 caracteres.</small>
+              } @else if (hasError('password', 'noUppercase')) {
+                <small class="field-error">A senha deve conter pelo menos uma letra maiúscula.</small>
+              } @else if (hasError('password', 'noLowercase')) {
+                <small class="field-error">A senha deve conter pelo menos uma letra minúscula.</small>
+              } @else if (hasError('password', 'consecutiveDigits')) {
+                <small class="field-error">A senha não pode ter dígitos repetidos consecutivos.</small>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="confirmPassword" class="field-label">
+                Confirmar senha <span class="required">*</span>
+              </label>
+              <p-password
+                inputId="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="Repita a senha"
+                [toggleMask]="true"
+                [feedback]="false"
+                styleClass="w-full"
+                [class.ng-invalid]="hasError('confirmPassword', 'required') || hasError('confirmPassword', 'mismatch')" />
+              @if (hasError('confirmPassword', 'required')) {
+                <small class="field-error">Confirmação de senha é obrigatória.</small>
+              } @else if (hasError('confirmPassword', 'mismatch')) {
+                <small class="field-error">As senhas não coincidem.</small>
+              }
+            </div>
+          }
+
         </div>
 
         <div class="form-actions">

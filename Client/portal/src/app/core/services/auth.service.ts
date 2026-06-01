@@ -75,4 +75,21 @@ export class AuthService {
       return null;
     }
   }
+
+  getEntityId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const payload = JSON.parse(atob(parts[1]));
+      const entityId = payload['entity_id'];
+      if (entityId === undefined || entityId === null) return null;
+      const parsed = Number(entityId);
+      return isNaN(parsed) ? null : parsed;
+    } catch {
+      return null;
+    }
+  }
 }

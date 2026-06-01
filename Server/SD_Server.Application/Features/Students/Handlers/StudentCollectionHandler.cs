@@ -6,12 +6,19 @@ using SD_SharedKernel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SD_Server.Domain.Features.StudentProfessionals;
 
 namespace SD_Server.Application.Features.Students.Handlers
 {
     public class StudentCollectionHandler
     {
         public class Query : IRequest<Result<Exception, IQueryable<StudentDTO>>> { }
+
+        public class QueryStudent : IRequest<Result<Exception, IQueryable<StudentDTO>>>
+        {
+            public int ProfessionalId { get; set; }
+        }
+        
         public class HandlerQuery(ILogger<HandlerQuery> logger, IStudentRepository repository) : IRequestHandler<Query, Result<Exception, IQueryable<StudentDTO>>>
         {
             public async Task<Result<Exception, IQueryable<StudentDTO>>> Handle(Query request, CancellationToken cancellationToken)
@@ -49,9 +56,34 @@ namespace SD_Server.Application.Features.Students.Handlers
                 });
 
                 return Result<Exception, IQueryable<StudentDTO>>.Of(collectionStudentDTO);
-
-                throw new NotImplementedException();
             }
         }
+        
+        public class HandlerQueryStudent(ILogger<HandlerQueryStudent> logger, IStudentRepository repository, IStudentProfissionalRepository  studentProfissionalRepository) : IRequestHandler<QueryStudent, Result<Exception, IQueryable<StudentDTO>>>
+        {
+            public async Task<Result<Exception, IQueryable<StudentDTO>>> Handle(QueryStudent request, CancellationToken cancellationToken)
+            {
+                logger.LogInformation($"Iniciando o processo de busca de todos os alunos do sistema que possuem o profissional com ID: {request.ProfessionalId}");
+                
+                var studentsIdResult = await studentProfissionalRepository.GetAllUserIdByProfessionalId(request.ProfessionalId);
+
+                if (studentsIdResult.IsFailure)
+                    return studentsIdResult.Failure;
+                
+                var collectionStudentDTO = studentsIdResult.Success.Select(x => new StudentDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Email = x.Email,
+                    Age = x.Age,
+                    CellPhone = x.CellPhone,
+                    Status = x.Status,
+                    LastReview = x.LastReview
+                });
+
+                return Result<Exception, IQueryable<StudentDTO>>.Of(collectionStudentDTO);
+            }
+        }
+        
     }
 }

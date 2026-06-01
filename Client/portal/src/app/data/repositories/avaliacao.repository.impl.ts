@@ -1,37 +1,45 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { Avaliacao } from '../../domain/entities/avaliacao.entity';
 import { AvaliacaoRepository } from '../../domain/repositories/avaliacao.repository';
 import { AvaliacaoDataSource } from '../datasources/avaliacao.datasource';
-import { toAvaliacaoEntity, toAvaliacaoModel } from '../models/avaliacao.model';
+import { toAvaliacaoEntity, toAvaliacaoApiPayload, toAvaliacaoEditPayload } from '../models/avaliacao.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AvaliacaoRepositoryImpl extends AvaliacaoRepository {
-  constructor(private readonly dataSource: AvaliacaoDataSource) {
+  constructor(
+    private readonly dataSource: AvaliacaoDataSource,
+    private readonly authService: AuthService,
+  ) {
     super();
   }
 
   getAll(): Observable<Avaliacao[]> {
     return this.dataSource.getAll().pipe(
-      map(models => models.map(toAvaliacaoEntity))
+      map(dtos => dtos.map(toAvaliacaoEntity))
     );
   }
 
   getById(id: number): Observable<Avaliacao> {
     return this.dataSource.getById(id).pipe(
-      map(model => toAvaliacaoEntity(model!))
+      map(dto => toAvaliacaoEntity(dto))
     );
   }
 
   create(avaliacao: Omit<Avaliacao, 'id'>): Observable<Avaliacao> {
-    return this.dataSource.create(toAvaliacaoModel(avaliacao)).pipe(
-      map(toAvaliacaoEntity)
+    const professionalId = this.authService.getEntityId() ?? 0;
+    const payload = toAvaliacaoApiPayload(avaliacao, professionalId);
+    return this.dataSource.create(payload).pipe(
+      map(dto => toAvaliacaoEntity(dto))
     );
   }
 
   update(id: number, avaliacao: Partial<Avaliacao>): Observable<Avaliacao> {
-    return this.dataSource.update(id, avaliacao).pipe(
-      map(toAvaliacaoEntity)
+    const payload = toAvaliacaoEditPayload(avaliacao);
+    return this.dataSource.update(id, payload).pipe(
+      switchMap(() => this.dataSource.getById(id)),
+      map(dto => toAvaliacaoEntity(dto))
     );
   }
 

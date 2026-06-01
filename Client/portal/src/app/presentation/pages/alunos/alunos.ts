@@ -15,6 +15,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { Aluno } from '../../../domain/entities/aluno.entity';
 import { GetAlunosUseCase } from '../../../domain/usecases/aluno/get-alunos.usecase';
 import { DeleteAlunoUseCase } from '../../../domain/usecases/aluno/delete-aluno.usecase';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-alunos',
@@ -39,6 +40,21 @@ import { DeleteAlunoUseCase } from '../../../domain/usecases/aluno/delete-aluno.
 export class AlunosComponent implements OnInit {
   searchTerm = '';
   alunos: Aluno[] = [];
+  loading = false;
+
+  get isProfessional(): boolean {
+    return this.authService.getRole() === 'Professional';
+  }
+
+  get pageTitle(): string {
+    return this.isProfessional ? 'Meus Alunos' : 'Alunos';
+  }
+
+  get pageSubtitle(): string {
+    return this.isProfessional
+      ? 'Alunos vinculados ao seu perfil'
+      : 'Gerencie todos os alunos cadastrados';
+  }
 
   constructor(
     private readonly router: Router,
@@ -46,6 +62,7 @@ export class AlunosComponent implements OnInit {
     private readonly confirmationService: ConfirmationService,
     private readonly getAlunosUseCase: GetAlunosUseCase,
     private readonly deleteAlunoUseCase: DeleteAlunoUseCase,
+    private readonly authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -53,8 +70,16 @@ export class AlunosComponent implements OnInit {
   }
 
   private loadAlunos(): void {
-    this.getAlunosUseCase.execute().subscribe(alunos => {
-      this.alunos = alunos;
+    this.loading = true;
+    this.getAlunosUseCase.execute().subscribe({
+      next: alunos => {
+        this.alunos = alunos;
+        this.loading = false;
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível carregar os alunos.' });
+        this.loading = false;
+      }
     });
   }
 

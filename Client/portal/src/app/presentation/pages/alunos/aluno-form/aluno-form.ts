@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -17,6 +18,7 @@ import { UpdateAlunoUseCase } from '../../../../domain/usecases/aluno/update-alu
     RouterLink,
     ButtonModule,
     InputTextModule,
+    PasswordModule,
     SelectModule,
     ToastModule,
   ],
@@ -64,7 +66,46 @@ export class AlunoFormComponent implements OnInit {
       cellPhone: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
       age:       [null, [Validators.required, Validators.min(1)]],
       status:    ['Ativo', Validators.required],
-    });
+      password:         ['', this.isEditMode ? [] : [
+        Validators.required,
+        Validators.minLength(6),
+        this.hasUppercase,
+        this.hasLowercase,
+        this.noConsecutiveDigits,
+      ]],
+      confirmPassword:  ['', this.isEditMode ? [] : [Validators.required]],
+    }, { validators: this.passwordsMatchValidator });
+  }
+
+  private hasUppercase(control: AbstractControl): ValidationErrors | null {
+    return /[A-Z]/.test(control.value ?? '') ? null : { noUppercase: true };
+  }
+
+  private hasLowercase(control: AbstractControl): ValidationErrors | null {
+    return /[a-z]/.test(control.value ?? '') ? null : { noLowercase: true };
+  }
+
+  private noConsecutiveDigits(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value ?? '';
+    for (let i = 0; i < value.length - 1; i++) {
+      if (/\d/.test(value[i]) && value[i] === value[i + 1]) return { consecutiveDigits: true };
+    }
+    return null;
+  }
+
+  private passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const password = group.get('password')?.value;
+    const confirm  = group.get('confirmPassword');
+    if (!confirm) return null;
+    if (password && confirm.value && password !== confirm.value) {
+      confirm.setErrors({ ...confirm.errors, mismatch: true });
+      return { mismatch: true };
+    }
+    if (confirm.errors?.['mismatch']) {
+      const { mismatch, ...rest } = confirm.errors;
+      confirm.setErrors(Object.keys(rest).length ? rest : null);
+    }
+    return null;
   }
 
   private loadAluno(id: number): void {
@@ -95,7 +136,15 @@ export class AlunoFormComponent implements OnInit {
     }
 
     this.submitting = true;
-    const payload = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const payload = {
+      name:      raw.name,
+      email:     raw.email,
+      cellPhone: raw.cellPhone,
+      age:       raw.age,
+      status:    raw.status,
+      ...(this.isEditMode ? {} : { password: raw.password }),
+    };
 
     const request$ = this.isEditMode && this.alunoId !== null
       ? this.updateAlunoUseCase.execute(this.alunoId, payload)

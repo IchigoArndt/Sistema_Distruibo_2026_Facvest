@@ -8,6 +8,7 @@ export interface AlunoModel {
   status: number;
   lastReview?: string;
   age: number;
+  password?: string;
 }
 
 const INVALID_DATE = '0001-01-01T00:00:00';
@@ -47,6 +48,7 @@ export function toAlunoModel(entity: Omit<Aluno, 'id'>): Omit<AlunoModel, 'id'> 
     cellPhone: entity.cellPhone.replace(/\D/g, ''),
     status: entity.status === 'Ativo' ? 1 : 2,
     lastReview: entity.lastReview,
-    age: entity.age
+    age: entity.age,
+    password: entity.password,
   };
 }

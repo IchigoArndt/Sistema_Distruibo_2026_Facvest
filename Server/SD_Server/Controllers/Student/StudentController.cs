@@ -33,6 +33,14 @@ namespace SD_Server.Api.Controllers.Student
         [Authorize(Roles = "Admin,Professional")]
         public async Task<IActionResult> Create(StudentCreateCommand request)
         {
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (role == "Professional")
+            {
+                var entityIdClaim = User.FindFirstValue("entity_id");
+                if (int.TryParse(entityIdClaim, out var professionalId))
+                    request.ProfessionalId = professionalId;
+            }
+            
             var result = await mediator.Send(request);
 
             return HandleCommand(result);
@@ -77,6 +85,25 @@ namespace SD_Server.Api.Controllers.Student
         {
             var query = new StudentDeleteCommand() { Id = id };
 
+            var response = await mediator.Send(query);
+
+            return HandleCommand(response);
+        }
+        
+        [HttpGet("GetAllStudentsByProfessionalId")]
+        [Authorize(Roles = "Professional")]
+        public async Task<IActionResult> GetAllStudentsByProfessionalId()
+        {
+            var query = new StudentCollectionHandler.QueryStudent();
+            
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (role == "Professional")
+            {
+                var entityIdClaim = User.FindFirstValue("entity_id");
+                if (int.TryParse(entityIdClaim, out var professionalId))
+                    query.ProfessionalId  = professionalId;
+            }
+                
             var response = await mediator.Send(query);
 
             return HandleCommand(response);

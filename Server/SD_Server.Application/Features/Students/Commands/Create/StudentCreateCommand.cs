@@ -11,5 +11,7 @@ namespace SD_Server.Application.Features.Students.Commands.Create
         public string Password { get; set; } = string.Empty;
         public int Age { get; set; }
         public string CellPhone { get; set; } = string.Empty;
+
+        public int? ProfessionalId { get; set; } = null;
     }
 }

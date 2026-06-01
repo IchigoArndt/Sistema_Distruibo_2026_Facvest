@@ -6,4 +6,5 @@ export interface Aluno {
   status: 'Ativo' | 'Inativo';
   lastReview?: string;
   age: number;
+  password?: string;
 }

@@ -4,6 +4,7 @@ using SD_Server.Application.Features.Students.Commands.Create;
 using SD_Server.Application.Helpers;
 using SD_Server.Domain.Base;
 using SD_Server.Domain.Enum;
+using SD_Server.Domain.Features.StudentProfessionals;
 using SD_Server.Domain.Features.Students;
 using SD_Server.Domain.Features.Users;
 using SD_SharedKernel.Helpers;
@@ -18,6 +19,7 @@ namespace SD_Server.Application.Features.Students.Handlers
             ILogger<Handler> logger,
             IStudentRepository repository,
             IUserRepository userRepository,
+            IStudentProfissionalRepository studentProfissionalRepository,
             IUnitOfWork unitOfWork) : IRequestHandler<StudentCreateCommand, Result<Exception, Unit>>
         {
             public async Task<Result<Exception, Unit>> Handle(StudentCreateCommand request, CancellationToken cancellationToken)
@@ -72,6 +74,23 @@ namespace SD_Server.Application.Features.Students.Handlers
                         return createUserResult.Failure;
                     }
 
+                    if (request.ProfessionalId.HasValue)
+                    {
+                        var createStudentProfessionalResult =  await studentProfissionalRepository.AddAsync(new StudentProfessional()
+                        {
+                            StudentId = createStudentResult.Success,
+                            ProfessionalId = request.ProfessionalId.Value,
+                            LinkedAt =  DateTime.UtcNow,
+                            Status =  StatusEnum.Active
+                        });
+
+                        if (createStudentProfessionalResult.IsFailure)
+                        {
+                            await unitOfWork.RollbackAsync(cancellationToken);
+                            return createStudentProfessionalResult.Failure;
+                        }
+                    }
+                    
                     await unitOfWork.CommitAsync(cancellationToken);
 
                     logger.LogInformation("Usuário criado com sucesso. Id: {Id}", createUserResult.Success);
