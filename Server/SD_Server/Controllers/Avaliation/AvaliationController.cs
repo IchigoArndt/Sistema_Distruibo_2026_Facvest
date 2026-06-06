@@ -69,7 +69,7 @@ namespace SD_Server.Api.Controllers.Avaliation
         }
 
         [HttpGet("GetById/{id}")]
-        [Authorize(Roles = "Admin,Professional")]
+        [Authorize(Roles = "Admin,Professional,Student")]
         public async Task<IActionResult> GetById(int id)
         {
             var query = new AvaliationDetailCommand { Id = id };

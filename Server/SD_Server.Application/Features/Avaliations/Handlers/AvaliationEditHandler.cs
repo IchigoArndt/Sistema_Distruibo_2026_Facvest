@@ -66,6 +66,9 @@ namespace SD_Server.Application.Features.Avaliations.Handlers
                     if (request.DateNextAvaliation.HasValue)
                         avaliation.DateNextAvaliation = request.DateNextAvaliation;
 
+                    if (request.Status.HasValue)
+                        avaliation.Status = request.Status.Value;
+
                     var updateResult = await repository.UpdateAsync(avaliation);
 
                     if (updateResult.IsFailure)

@@ -9,6 +9,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { Aluno } from '../../../../domain/entities/aluno.entity';
 import { GetAlunoByIdUseCase } from '../../../../domain/usecases/aluno/get-aluno-by-id.usecase';
 import { DeleteAlunoUseCase } from '../../../../domain/usecases/aluno/delete-aluno.usecase';
+import { ActivateAlunoUseCase } from '../../../../domain/usecases/aluno/activate-aluno.usecase';
 
 @Component({
   selector: 'app-aluno-detalhe',
@@ -27,6 +28,7 @@ import { DeleteAlunoUseCase } from '../../../../domain/usecases/aluno/delete-alu
 export class AlunoDetalheComponent implements OnInit {
   aluno: Aluno | null = null;
   loading = true;
+  activating = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -35,6 +37,7 @@ export class AlunoDetalheComponent implements OnInit {
     private readonly confirmationService: ConfirmationService,
     private readonly getAlunoByIdUseCase: GetAlunoByIdUseCase,
     private readonly deleteAlunoUseCase: DeleteAlunoUseCase,
+    private readonly activateAlunoUseCase: ActivateAlunoUseCase,
   ) {}
 
   ngOnInit(): void {
@@ -67,6 +70,34 @@ export class AlunoDetalheComponent implements OnInit {
 
   getSeverity(status: string): 'success' | 'danger' | undefined {
     return status === 'Ativo' ? 'success' : 'danger';
+  }
+
+  confirmActivate(): void {
+    this.confirmationService.confirm({
+      message: `Deseja reativar o aluno <strong>${this.aluno?.name}</strong>?`,
+      header: 'Confirmar Reativação',
+      icon: 'pi pi-check-circle',
+      acceptLabel: 'Reativar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-success',
+      accept: () => this.activateAluno(),
+    });
+  }
+
+  private activateAluno(): void {
+    if (!this.aluno) return;
+    this.activating = true;
+    this.activateAlunoUseCase.execute(this.aluno.id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Aluno reativado com sucesso.' });
+        this.loadAluno(this.aluno!.id);
+        this.activating = false;
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível reativar o aluno.' });
+        this.activating = false;
+      }
+    });
   }
 
   confirmDelete(): void {

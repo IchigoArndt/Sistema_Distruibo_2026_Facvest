@@ -283,5 +283,6 @@ export function toAvaliacaoEditPayload(entity: Partial<Avaliacao>): Partial<Aval
   if (entity.imc !== undefined)            payload.imc = entity.imc;
   if (entity.percentualGordura !== undefined) payload.bodyFatPercentage = entity.percentualGordura;
   if (entity.proximaAvaliacao)   payload.dateNextAvaliation = displayDateToIso(entity.proximaAvaliacao);
+  if (entity.status !== undefined) payload.status = STATUS_TO_INT[entity.status];
   return payload;
 }

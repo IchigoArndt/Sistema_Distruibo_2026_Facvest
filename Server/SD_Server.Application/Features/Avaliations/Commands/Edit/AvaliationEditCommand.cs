@@ -1,4 +1,5 @@
 using MediatR;
+using SD_Server.Domain.Enum;
 using SD_Server.Domain.Features.Avaliations;
 using SD_SharedKernel.Helpers;
 using Unit = SD_SharedKernel.Helpers.Unit;
@@ -15,5 +16,6 @@ namespace SD_Server.Application.Features.Avaliations.Commands.Edit
         public string? IMC { get; set; }
         public string? BodyFatPercentage { get; set; }
         public DateTime? DateNextAvaliation { get; set; }
+        public StatusAssessmentEnum? Status { get; set; }
     }
 }

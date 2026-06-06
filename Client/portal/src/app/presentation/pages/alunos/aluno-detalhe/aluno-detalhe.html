@@ -47,6 +47,15 @@
             severity="warn"
             [routerLink]="['/alunos', aluno.id, 'editar']"
             styleClass="w-full" />
+          @if (aluno.status === 'Inativo') {
+            <p-button
+              label="Reativar"
+              icon="pi pi-check-circle"
+              severity="success"
+              [loading]="activating"
+              (onClick)="confirmActivate()"
+              styleClass="w-full" />
+          }
           <p-button
             label="Excluir"
             icon="pi pi-trash"

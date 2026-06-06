@@ -147,7 +147,7 @@ export class AvaliacaoFormComponent implements OnInit {
 
   private loadAlunos(): void {
     this.getAlunosUseCase.execute().subscribe(alunos => {
-      this.alunos = alunos;
+      this.alunos = alunos.filter(a => a.status === 'Ativo');
     });
   }
 
@@ -209,6 +209,8 @@ export class AvaliacaoFormComponent implements OnInit {
     const raw = this.form.getRawValue();
     const alunoSelecionado = this.alunos.find(a => a.id === raw.alunoId);
 
+    const imc = this.calcularImc();
+
     const payload = {
       alunoId:             raw.alunoId,
       alunoNome:           alunoSelecionado?.name ?? '',
@@ -221,11 +223,21 @@ export class AvaliacaoFormComponent implements OnInit {
       anamnese:            raw.anamnese,
       parecerTecnico:      raw.parecerTecnico || undefined,
       proximaAvaliacao:    this.formatDate(raw.proximaAvaliacao),
-      imc:                 this.calcularImc(),
+      imc,
+    };
+
+    const updatePayload = {
+      status:             'Concluída' as const,
+      composicaoCorporal: raw.composicaoCorporal,
+      dobrasCutaneas:     raw.tipo === 'Completa' ? raw.dobrasCutaneas : undefined,
+      anamnese:           raw.anamnese,
+      parecerTecnico:     raw.parecerTecnico || undefined,
+      proximaAvaliacao:   this.formatDate(raw.proximaAvaliacao),
+      imc,
     };
 
     const request$ = this.isEditMode && this.avaliacaoId !== null
-      ? this.updateAvaliacaoUseCase.execute(this.avaliacaoId, payload)
+      ? this.updateAvaliacaoUseCase.execute(this.avaliacaoId, updatePayload)
       : this.createAvaliacaoUseCase.execute(payload);
 
     request$.subscribe({

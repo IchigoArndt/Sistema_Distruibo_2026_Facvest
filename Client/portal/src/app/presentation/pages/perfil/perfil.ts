@@ -7,9 +7,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { DividerModule } from 'primeng/divider';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Profissional } from '../../../domain/entities/profissional.entity';
-import { GetProfissionaisUseCase } from '../../../domain/usecases/profissional/get-profissionais.usecase';
+import { GetProfissionalMeUseCase } from '../../../domain/usecases/profissional/get-profissional-me.usecase';
 import { UpdateProfissionalUseCase } from '../../../domain/usecases/profissional/update-profissional.usecase';
-import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-perfil',
@@ -27,24 +26,14 @@ export class PerfilComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    private readonly authService: AuthService,
-    private readonly getProfissionaisUseCase: GetProfissionaisUseCase,
+    private readonly getProfissionalMeUseCase: GetProfissionalMeUseCase,
     private readonly updateProfissionalUseCase: UpdateProfissionalUseCase
   ) {}
 
   ngOnInit(): void {
-    const entityId = this.authService.getEntityId();
-    if (!entityId) {
-      this.error = 'Sessão inválida. Faça login novamente.';
-      this.loading = false;
-      return;
-    }
-
-    this.getProfissionaisUseCase.execute().subscribe({
-      next: (lista) => {
-        const found = lista.find(p => p.id === entityId);
-        if (found) this.profissional = found;
-        else this.error = 'Perfil não encontrado.';
+    this.getProfissionalMeUseCase.execute().subscribe({
+      next: (profissional) => {
+        this.profissional = profissional;
         this.loading = false;
       },
       error: () => {

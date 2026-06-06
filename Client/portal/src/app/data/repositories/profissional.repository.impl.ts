@@ -11,6 +11,12 @@ export class ProfissionalRepositoryImpl extends ProfissionalRepository {
     super();
   }
 
+  getMe(): Observable<Profissional> {
+    return this.dataSource.getMe().pipe(
+      map(toProfissionalEntity)
+    );
+  }
+
   getAll(): Observable<Profissional[]> {
     return this.dataSource.getAll().pipe(
       map(models => models.map(toProfissionalEntity))

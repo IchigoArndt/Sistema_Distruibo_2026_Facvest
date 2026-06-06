@@ -40,4 +40,8 @@ export class AlunoDataSource {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/DeleteStudent/${id}`);
   }
+
+  activate(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/ActivateStudent/${id}`, {});
+  }
 }

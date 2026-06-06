@@ -125,6 +125,8 @@ public class AvaliationRepository(SdServerDbContext context, ILogger<AvaliationR
             if (entity.DateNextAvaliation.HasValue)
                 avaliation.DateNextAvaliation = entity.DateNextAvaliation;
 
+            avaliation.Status = entity.Status; //Sempre atualiza o Status
+            
             context.Avaliations.Update(avaliation);
             await context.SaveChangesAsync();
 

@@ -7,4 +7,5 @@ export abstract class AlunoRepository {
   abstract create(aluno: Omit<Aluno, 'id'>): Observable<Aluno>;
   abstract update(id: number, aluno: Partial<Aluno>): Observable<Aluno>;
   abstract delete(id: number): Observable<void>;
+  abstract activate(id: number): Observable<void>;
 }

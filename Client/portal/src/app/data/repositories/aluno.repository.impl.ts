@@ -47,4 +47,8 @@ export class AlunoRepositoryImpl extends AlunoRepository {
   delete(id: number): Observable<void> {
     return this.dataSource.delete(id);
   }
+
+  activate(id: number): Observable<void> {
+    return this.dataSource.activate(id);
+  }
 }
