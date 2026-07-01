@@ -1,0 +1,112 @@
+# Sistema Distribuído 2026 — stack completa
+# Requer Docker com pelo menos 4 GB de RAM (SQL Server usa ~2 GB).
+#
+# Subir:   docker compose up -d --build
+# Logs:    docker compose logs -f
+# Parar:   docker compose down
+# Reset:   docker compose down -v
+#
+# URLs:
+#   Portal  → http://localhost:4200
+#   Auth    → http://localhost:5159/scalar
+#   Server  → http://localhost:5252/scalar
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: sd-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-p4ssw0rd!}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sd-sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" -b -o /dev/null || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" -b -o /dev/null",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 45s
+    networks:
+      - sd-network
+
+  mongodb:
+    image: docker.io/library/mongo:7
+    container_name: sd-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - sd-mongodb-data:/data/db
+    networks:
+      - sd-network
+
+  server:
+    build:
+      context: ./Server
+      dockerfile: SD_Server/Dockerfile
+    container_name: sd-server
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5252
+      Connection_Sql: Server=sqlserver,1433;Database=SistemaDistribuicao;User Id=sa;Password=${MSSQL_SA_PASSWORD:-p4ssw0rd!};TrustServerCertificate=True;MultipleActiveResultSets=True;
+      Connection_Mongo: mongodb://mongodb:27017/LogsSistemaDistribuicao
+      Secret: ${JWT_SECRET:-SD_Server_Secret_Key_2026_Facvest_MatrixCompetency_32chars!}
+    ports:
+      - "5252:5252"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    networks:
+      - sd-network
+    restart: on-failure
+
+  auth:
+    build:
+      context: ./Server
+      dockerfile: SD_Server.Auth/Dockerfile
+    container_name: sd-auth
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5159
+      Connection_Sql: Server=sqlserver,1433;Database=SistemaDistribuicao;User Id=sa;Password=${MSSQL_SA_PASSWORD:-p4ssw0rd!};TrustServerCertificate=True;MultipleActiveResultSets=True;
+      Connection_Mongo: mongodb://mongodb:27017/LogsSistemaDistribuicao
+      Secret: ${JWT_SECRET:-SD_Server_Secret_Key_2026_Facvest_MatrixCompetency_32chars!}
+    ports:
+      - "5159:5159"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      server:
+        condition: service_started
+    networks:
+      - sd-network
+    restart: on-failure
+
+  client:
+    build:
+      context: ./Client/portal
+      dockerfile: Dockerfile
+    container_name: sd-client
+    ports:
+      - "4200:80"
+    depends_on:
+      - auth
+      - server
+    networks:
+      - sd-network
+
+networks:
+  sd-network:
+    driver: bridge
+
+volumes:
+  sd-sqlserver-data:
+  sd-mongodb-data:

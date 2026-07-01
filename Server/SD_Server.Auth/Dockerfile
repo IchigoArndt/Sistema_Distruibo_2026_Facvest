@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+COPY SD_SharedKernel/SD_SharedKernel.csproj SD_SharedKernel/
+COPY SD_Api_Base/SD_Api_Base.csproj SD_Api_Base/
+COPY SD_Api_Extensions/SD_Api_Extensions.csproj SD_Api_Extensions/
+COPY SD_Server.Domain/SD_Server.Domain.csproj SD_Server.Domain/
+COPY SD_Server.Application/SD_Server.Application.csproj SD_Server.Application/
+COPY SD_Server.Infra/SD_Server.Infra.csproj SD_Server.Infra/
+COPY SD_Server.Infra.Data/SD_Server.Infra.Data.csproj SD_Server.Infra.Data/
+COPY SD_Server.Auth/SD_Server.Auth.csproj SD_Server.Auth/
+
+RUN dotnet restore SD_Server.Auth/SD_Server.Auth.csproj
+
+COPY SD_SharedKernel/ SD_SharedKernel/
+COPY SD_Api_Base/ SD_Api_Base/
+COPY SD_Api_Extensions/ SD_Api_Extensions/
+COPY SD_Server.Domain/ SD_Server.Domain/
+COPY SD_Server.Application/ SD_Server.Application/
+COPY SD_Server.Infra/ SD_Server.Infra/
+COPY SD_Server.Infra.Data/ SD_Server.Infra.Data/
+COPY SD_Server.Auth/ SD_Server.Auth/
+COPY SD_Server/appsettings.json SD_Server/appsettings.Development.json SD_Server/
+
+WORKDIR /src/SD_Server.Auth
+RUN dotnet publish SD_Server.Auth.csproj -c Release -o /app/publish /p:UseAppHost=false /p:ErrorOnDuplicatePublishOutputFiles=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:5159
+EXPOSE 5159
+
+ENTRYPOINT ["dotnet", "SD_Server.Auth.dll"]
