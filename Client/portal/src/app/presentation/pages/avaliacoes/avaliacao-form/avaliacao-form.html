@@ -30,11 +30,11 @@
           <p-select
             formControlName="alunoId"
             [options]="alunos"
-            optionLabel="nome"
+            optionLabel="name"
             optionValue="id"
             placeholder="Selecione o aluno"
             [filter]="true"
-            filterBy="nome"
+            filterBy="name"
             [showClear]="true"
             styleClass="w-full"
             [class.ng-invalid]="hasError('alunoId','required')" />

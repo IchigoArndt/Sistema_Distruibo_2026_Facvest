@@ -146,8 +146,17 @@ export class AvaliacaoFormComponent implements OnInit {
   }
 
   private loadAlunos(): void {
-    this.getAlunosUseCase.execute().subscribe(alunos => {
-      this.alunos = alunos.filter(a => a.status === 'Ativo');
+    this.getAlunosUseCase.execute().subscribe({
+      next: alunos => {
+        this.alunos = alunos.filter(a => a.status === 'Ativo');
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar os alunos.',
+        });
+      },
     });
   }
 
